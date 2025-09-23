@@ -196,22 +196,31 @@
   <!-- Products -->
   <section class="products">
 
-    {% for i in items %}
+{% for i in items %}
   <div class="hidden-product" style="display:none">
     <a href="{% url 'item' i.pk %}">
-    {% if i.images.exists %}
-      <img src="{{ i.images.first.image.url }}" alt="{{ i.name }}" class="main-img">
+      {% if i.images.first %}
+        <img src="{{ i.images.first.image.url }}" alt="{{ i.name }}" class="main-img">
       {% else %}
         <img src="{% static 'images/blank_image.png' %}" alt="{{ i.name }}" class="main-img">
       {% endif %}
     </a>
-    <a href="{% url 'item' i.pk %}" style="text-decoration: none;"><h3 style="text-decoration: none; color: black; font-family: Times New Roman;">{{ i.name }}</h3></a>
-    <a href="{% url 'item' i.pk %}" style="text-decoration: none; color:color: #666 ;"><p>${{ i.price }}</p></a>
-    <button>Add to Cart</button>
+
+    <a href="{% url 'item' i.pk %}" style="text-decoration: none;">
+      <h3 style="margin:0; color: black; font-family: 'Times New Roman';">{{ i.name }}</h3>
+    </a>
+
+    <a href="{% url 'item' i.pk %}" style="text-decoration: none; color: #666;">
+      {% if i.price %}
+        <p style="margin:0;">${{ i.price}}</p>
+      {% else %}
+        <p style="margin:0;">Price not available</p>
+      {% endif %}
+    </a>
+
+    <button type="button">Add to Cart</button>
   </div>
-
-
-  {% endfor %}
+{% endfor %}
 
   </section>
 

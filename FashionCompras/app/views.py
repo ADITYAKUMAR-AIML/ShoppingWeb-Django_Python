@@ -11,6 +11,7 @@ from .data import popular_items, Cart_items
 from django.core.paginator import Paginator #To display the specific no of the items inside one page.
 from .form import ItemForm
 from django.shortcuts import render, get_object_or_404
+
 @login_required(login_url='login_page')  # if not logged in → redirect to /login/
 def home(request):
     context = {
@@ -169,15 +170,25 @@ def add_item(request):
         else:
             # Process price
             try:
-                price_value = Decimal(price)
+                                
+                max_digits_before_decimal = 6  # set your max digits limit
+                price_value = Decimal(str(price))
                 
-                # Check if price has more than 2 decimal places
+                # Check for max 2 decimal places
                 if price_value.as_tuple().exponent < -2:
                     messages.error(request, "Price cannot have more than 2 decimal places!")
                     form = ItemForm(initial=form_data)
                     context = {'form': form, 'form_data': form_data}
                     return render(request, "add_item.html", context)
                 
+                # Check max digits before decimal
+                digits_before_decimal = len(price_value.as_tuple().digits) + price_value.as_tuple().exponent
+                if digits_before_decimal > max_digits_before_decimal:
+                    messages.error(request, f"Price cannot have more than {max_digits_before_decimal} digits before the decimal!")
+                    form = ItemForm(initial=form_data)
+                    context = {'form': form, 'form_data': form_data}
+                    return render(request, "add_item.html", context)
+
                 # If it's a whole number, add .99
                 if price_value == price_value.to_integral_value():
                     price_value = price_value + Decimal("0.99")
