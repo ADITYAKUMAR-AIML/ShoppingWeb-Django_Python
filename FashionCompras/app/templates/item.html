@@ -284,21 +284,59 @@
   }
 
   // Quantity & Price update
-function updateQty(val) { // val = +1 or -1
-  let qtyEl = document.getElementById("qty");     // quantity display
-  let priceEl = document.getElementById("price"); // price element
+// Robust updateQty function
+function updateQty(val, {
+  qtyId = 'qty',
+  priceId = 'price',
+  subtotalId = 'subtotal', // optional: update another element if provided
+  currency = 'USD'         // change to your currency if needed (e.g. 'INR', 'EUR')
+} = {}) {
+  const qtyEl = document.getElementById(qtyId);
+  const priceEl = document.getElementById(priceId);
+  const subtotalEl = subtotalId ? document.getElementById(subtotalId) : null;
+  if (!qtyEl || !priceEl) return;
 
-  let qty = parseInt(qtyEl.textContent) || 1;
+  // support <input> or <span>
+  const isInput = qtyEl.tagName === 'INPUT' || qtyEl.tagName === 'TEXTAREA';
+  let qty = parseInt(isInput ? qtyEl.value : qtyEl.textContent, 10);
+  if (!Number.isFinite(qty) || qty < 1) qty = 1;
 
-  // Remove "$" and convert to number
-  let basePrice = parseFloat(priceEl.textContent.replace("$", "")) || 0;
+  // get unit price: prefer a stored data attribute
+  let unitPrice = null;
+  if (priceEl.dataset && priceEl.dataset.unitPrice) {
+    unitPrice = parseFloat(priceEl.dataset.unitPrice);
+  } else {
+    // fallback: parse displayed number
+    const displayed = parseFloat((priceEl.textContent || '').replace(/[^0-9.-]/g, '')) || 0;
+    // if displayed likely is total (qty > 1) compute unit guess
+    unitPrice = qty > 0 ? (displayed / qty) : displayed;
+  }
+  if (!Number.isFinite(unitPrice)) unitPrice = 0;
 
-  qty = Math.max(1, qty + val); // don’t go below 1
-  qtyEl.textContent = qty;
+  // update qty but do not go below 1
+  qty = Math.max(1, qty + val);
 
-  let newPrice = (basePrice * qty);
-  priceEl.textContent = "$" + newPrice;
+  // update qty element
+  if (isInput) qtyEl.value = qty; else qtyEl.textContent = qty;
+
+  // compute new total and update display
+  const newTotal = unitPrice * qty;
+
+  // keep unit price persisted for future clicks (so we don't lose it)
+  priceEl.dataset.unitPrice = unitPrice.toFixed(2);
+
+  // format price using Intl.NumberFormat for consistent currency display
+  try {
+    const fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency });
+    priceEl.textContent = fmt.format(newTotal);
+    if (subtotalEl) subtotalEl.textContent = fmt.format(newTotal);
+  } catch (e) {
+    // fallback if Intl can't be used: basic formatting with $ and 2 decimals
+    priceEl.textContent = '$' + newTotal.toFixed(2);
+    if (subtotalEl) subtotalEl.textContent = '$' + newTotal.toFixed(2);
+  }
 }
+
 
 </script>
 
