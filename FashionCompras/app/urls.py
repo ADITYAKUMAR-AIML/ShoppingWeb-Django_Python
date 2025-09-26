@@ -17,6 +17,7 @@ urlpatterns = [
     path('Shop/', views.ProductsPage, name='Shop'),
     path('category/<str:category_name>/', views.category, name='category'),
     path("item/<int:pk>/edit/", views.edit_item, name="edit_item"),
+    path('ContactPage/', views.ContactPage, name='ContactPage'),
 ]
 
 if settings.DEBUG:

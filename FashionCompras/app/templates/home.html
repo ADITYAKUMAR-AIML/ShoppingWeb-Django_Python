@@ -165,7 +165,7 @@
       </form>
     </div>
 
-    <div class="cart">
+    <div class="cart" style="display:inline-block">
       <a href="{% url 'cart' %}" style="text-decoration: none; cursor: pointer;color: black ; margin-right: 45px">🛒 Cart</a>
 
       {% if request.user.is_authenticated %}
@@ -173,6 +173,9 @@
       {% else %}
         <a href="{% url 'login_page' %}" style="text-decoration: none; cursor: pointer;color: black ; margin-right: 45px">Login</a>
       {% endif %}
+
+      <img src="{% static 'images/Darkmode.svg' %}" alt="Dark Light" style="height: 1em ; width: 1rem" id="DarkLight" />
+      
     </div>
     
   </header>
@@ -239,10 +242,35 @@
   <script>
 
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("✅ DOM fully loaded");
+  console.log("✅ DOM fully loaded"); //After DOM loaded perform this fxns.
 
   const view_more = document.getElementById('view-more-btn');
   const products = document.querySelectorAll(".hidden-product");
+  const DarkMode = document.getElementById("DarkLight"); // make sure this ID exists in HTML
+
+DarkMode.addEventListener('click', function() {
+    if (DarkMode.src.includes("Darkmode.svg")) {
+        // Switch to light mode icon
+        DarkMode.src = "{% static 'images/sun.webp' %}";
+
+        // Apply dark theme
+        document.querySelectorAll("*").forEach(el => {
+            el.style.backgroundColor = "black";
+            el.style.color = "white";
+        });
+
+    } else {
+        // Switch back to dark mode icon
+        DarkMode.src = "{% static 'images/Darkmode.svg' %}";
+
+        // Apply light theme
+        document.querySelectorAll("*").forEach(el => {
+            el.style.backgroundColor = "white";
+            el.style.color = "black";
+        });
+    }
+});
+
 
 
   products.forEach((product,index)=>{

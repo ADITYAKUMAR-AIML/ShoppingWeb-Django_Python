@@ -36,16 +36,25 @@
         button:hover {
             background-color: #ff1f3d;
         }
+        #Contact{
+            display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    transition: background 0.3s;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center;">
         <h2>Do u need any Help ?</h2>
         <img src="{% static "images/contact.jpg" %}" alt="Sad Emoji">
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit">Contact</button>
-        </form>
+        <a href="{% url 'ContactPage' %}" id="Contact">Contact</a>
+
     </div>
 </body>
 </html>

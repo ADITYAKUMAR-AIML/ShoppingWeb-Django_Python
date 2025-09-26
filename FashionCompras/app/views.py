@@ -92,7 +92,7 @@ def item_detail(request, pk):
     return render(request, "item.html", context)
 
 def Contact(request):
-    return render(request, "Contact.html")
+    return render(request, "Contacting.html")
 
 
 def ProductsPage(request):
@@ -237,9 +237,14 @@ def PrivacyPolicy(request):
     
     return render(request, "policydownload.html")    
 
+def ContactPage(request):
+
+    return render(request, "ContactPage.html") 
+
 from django.db.models import Q
 
 def category(request, category_name):
+    
     items = Item.objects.filter(category=category_name)
 
     context = {

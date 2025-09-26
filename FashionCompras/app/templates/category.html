@@ -1,5 +1,4 @@
 {%  load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -176,6 +175,8 @@
       Gaming
     </a>
     <a href="{% url 'cart' %}">🛒</a>
+    
+    <img src="{% static 'images/Darkmode.svg' %}" alt="Dark Light" style="height: 1em ; width: 1rem" id="DarkLight" />
 
     </nav>
   </header>
@@ -240,12 +241,31 @@
 
 {% include "products.html"  %}
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("✅ DOM fully loaded");
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 ShopEase. All rights reserved. | <a href="{% url 'PrivacyPolicy' %}">Privacy Policy</a></p>
-    <p style="display: flex; justify-content: center;">Made by Aditya with ♥</p>
-  </footer>
+    const DarkMode = document.getElementById("DarkLight");
+    if (!DarkMode) return; // safety check
+
+    DarkMode.addEventListener('click', function() {
+        if (DarkMode.src.includes("Darkmode.svg")) {
+            DarkMode.src = "{% static 'images/sun.webp' %}";
+            document.querySelectorAll("*").forEach(el => {
+                el.style.backgroundColor = "black";
+                document.body.style.backgroundColor = "black"; // sets body background to black
+                el.style.color = "white";
+            });
+        } else {
+            DarkMode.src = "{% static 'images/Darkmode.svg' %}";
+            document.querySelectorAll("*").forEach(el => {
+                el.style.backgroundColor = "white";
+                el.style.color = "black";
+            });
+        }
+    });
+});
+</script>
 
 </body>
 </html>
