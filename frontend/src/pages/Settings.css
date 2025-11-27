@@ -1,0 +1,20 @@
+/* Dark mode for settings page */
+body.dark-mode .settings-page h1,
+body.dark-mode .settings-page h2 {
+  color: #f59e0b;
+}
+
+body.dark-mode .settings-page > div > div > div {
+  background: #2a2a2a !important;
+  border-color: #444 !important;
+}
+
+body.dark-mode .settings-page > div > div > div[style*="background: #fef3c7"] {
+  background: #3a3a1a !important;
+  border-color: #f59e0b !important;
+}
+
+body.dark-mode .settings-page p {
+  background: #2a2a2a !important;
+  color: #9ca3af !important;
+}

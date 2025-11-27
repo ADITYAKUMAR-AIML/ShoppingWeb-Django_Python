@@ -4,10 +4,20 @@
 :root {
   --light-orange: #FFE5CC;
   --medium-orange: #FFD4A3;
-  --dark-orange: #CC5500;
-  --deep-orange: #B34700;
+  --dark-orange: #cd7d43;
+  --deep-orange: #c36323;
   --gradient-orange: linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #E63946 100%);
   --gradient-orange-hover: linear-gradient(135deg, #FF9D5C 0%, #FF7B45 50%, #F04956 100%);
+}
+
+/* Dark mode variables */
+body.dark-mode {
+  --light-orange: #1a1a1a;
+  --dark-orange: #ff8c42;
+  --medium-orange: #ff6b35;
+  --card-bg: #2a2a2a;
+  --border-color: #444;
+  --text-color: #f0f0f0;
 }
 
 * {
@@ -49,6 +59,7 @@ body.dark-mode {
 div {
   color: var(--dark-orange);
 }
+
 
 .product,
 .cart-item,

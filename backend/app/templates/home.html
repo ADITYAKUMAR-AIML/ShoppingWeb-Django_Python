@@ -5,28 +5,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FashionCompras</title>
-
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
   <style>
     * {margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif;}
-    body {background: #f8f9fa; color: #333;}
+    body {background: var(--bg); color: var(--text);}
 
     /* Header */
     header {
-      background: #fff;
+      background: var(--header-bg);
       padding: 1rem 5%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px var(--shadow);
       position: sticky;
       top: 0;
       z-index: 1000;
     }
-    header .logo {font-size: 1.5rem; font-weight: bold; color: #ff6b6b;}
+    header .logo {font-size: 1.5rem; font-weight: bold; color: var(--accent);}
     header nav a {
       margin: 0 1rem;
       text-decoration: none;
-      color: #333;
+      color: var(--text);
       font-weight: 500;
     }
     header .search-box input {
@@ -63,11 +63,11 @@
       gap: 1rem;
     }
     .category {
-      background: #fff;
+      background: var(--card-bg);
       padding: 2rem;
       text-align: center;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px var(--shadow);
       cursor: pointer;
       transition: 0.3s;
     }
@@ -81,11 +81,11 @@
       gap: 1.5rem;
     }
     .product {
-      background: #fff;
+      background: var(--card-bg);
       padding: 1rem;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px var(--shadow);
       transition: 0.3s;
       /* if you intended fixed size, uncomment next two lines */
       /* height: 100px; */
@@ -93,7 +93,7 @@
     }
     .product img {max-width: 100%; border-radius: 10px; height: 100px; width: 100px;}
     .product h3 {margin: 0.8rem 0;}
-    .product p {color: #666;}
+    .product p {color: var(--muted-text);}
     .product button {
       background: #ff6b6b;
       color: #fff;
@@ -105,12 +105,13 @@
     .product:hover {transform: translateY(-5px);}
 
     .hidden-product {
-      background: #fff;
+      background: #ffffff;
       padding: 1rem;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px var(--shadow);
       transition: 0.3s;
+      border-top: 0;
     }
     .hidden-product img {
       width: 200px;
@@ -119,7 +120,7 @@
       border-radius: 10px;
     }
     .hidden-product h3 { margin: 0.8rem 0; }
-    .hidden-product p { color: #666; }
+    .hidden-product p { color: var(--muted-text); }
     .hidden-product button {
       background: #ff6b6b;
       color: #fff;
@@ -132,8 +133,8 @@
 
     /* Footer */
     footer {
-      background: #333;
-      color: #fff;
+      background: var(--footer-bg);
+      color: var(--text);
       text-align: center;
       padding: 2rem 5%;
       margin-top: 2rem;
@@ -142,7 +143,7 @@
       text-decoration: none;
       color: #ff0000ff;
     }
-    footer a { color: #ff6b6b; text-decoration: none; } /* for link */
+    footer a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
@@ -166,12 +167,12 @@
     </div>
 
     <div class="cart" style="display:inline-block">
-      <a href="{% url 'cart' %}" style="text-decoration: none; cursor: pointer;color: black ; margin-right: 45px">🛒 Cart</a>
+      <a href="{% url 'cart' %}" style="text-decoration: none; cursor: pointer;color: var(--text) ; margin-right: 45px">🛒 Cart</a>
 
       {% if request.user.is_authenticated %}
-        <a href="{% url 'logout' %}" style="text-decoration: none; cursor: pointer;color: black ; margin-right: 45px">Logout</a>
+        <a href="{% url 'logout' %}" style="text-decoration: none; cursor: pointer;color: var(--text) ; margin-right: 45px">Logout</a>
       {% else %}
-        <a href="{% url 'login_page' %}" style="text-decoration: none; cursor: pointer;color: black ; margin-right: 45px">Login</a>
+        <a href="{% url 'login_page' %}" style="text-decoration: none; cursor: pointer;color: var(--text) ; margin-right: 45px">Login</a>
       {% endif %}
 
       <img src="{% static 'images/Darkmode.svg' %}" alt="Dark Light" style="height: 1em ; width: 1rem" id="DarkLight" />
@@ -210,10 +211,10 @@
     </a>
 
     <a href="{% url 'item' i.pk %}" style="text-decoration: none;">
-      <h3 style="margin:0; color: black; font-family: 'Times New Roman';">{{ i.name }}</h3>
+      <h3 style="margin:0; color: var(--text); font-family: 'Times New Roman';">{{ i.name }}</h3>
     </a>
 
-    <a href="{% url 'item' i.pk %}" style="text-decoration: none; color: #666;">
+    <a href="{% url 'item' i.pk %}" style="text-decoration: none; color: var(--muted-text);">
       {% if i.price %}
         <p style="margin:0;">${{ i.price}}</p>
       {% else %}
@@ -242,60 +243,23 @@
   <script>
 
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("✅ DOM fully loaded"); //After DOM loaded perform this fxns.
-
   const view_more = document.getElementById('view-more-btn');
   const products = document.querySelectorAll(".hidden-product");
-  const DarkMode = document.getElementById("DarkLight"); // make sure this ID exists in HTML
-
-DarkMode.addEventListener('click', function() {
-    if (DarkMode.src.includes("Darkmode.svg")) {
-        // Switch to light mode icon
-        DarkMode.src = "{% static 'images/sun.webp' %}";
-
-        // Apply dark theme
-        document.querySelectorAll("*").forEach(el => {
-            el.style.backgroundColor = "black";
-            el.style.color = "white";
-        });
-
-    } else {
-        // Switch back to dark mode icon
-        DarkMode.src = "{% static 'images/Darkmode.svg' %}";
-
-        // Apply light theme
-        document.querySelectorAll("*").forEach(el => {
-            el.style.backgroundColor = "white";
-            el.style.color = "black";
-        });
-    }
-});
-
-
-
-  products.forEach((product,index)=>{
+  products.forEach(function(product,index){
     if(index < 5){
-      product.style.display="block"
+      product.style.display = "block";
     }
-  })
-
+  });
   view_more.addEventListener('click', function() {
-    console.log("👉 Button clicked");
-    const hidden_items = document.querySelectorAll('.hidden-product');
-    console.log("Found", hidden_items.length, "hidden items");
-
-    hidden_items.forEach(item => {
+    var hidden_items = document.querySelectorAll('.hidden-product');
+    hidden_items.forEach(function(item){
       item.style.display = 'block';
     });
-
-    // Hide button after showing all
     view_more.style.display = 'none';
   });
-
-
-
 });
 
   </script>
+  <script src="{% static 'script.js' %}"></script>
 </body>
 </html>

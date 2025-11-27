@@ -1,3 +1,7 @@
+html {
+  zoom: 0.8;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +9,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body.dark-mode,
+body.dark-mode * {
+  color: #ffffff !important;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode button {
+  color: #ffffff !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: rgba(255,255,255,0.75) !important;
 }
 
 code {

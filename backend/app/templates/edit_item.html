@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<h2>Edit item</h2>
+<h2 style="color: var(--text)">Edit item</h2>
 
 <form method="post" enctype="multipart/form-data" id="edit-item-form">
     {% csrf_token %}
@@ -168,9 +168,9 @@
 })();
 </script>
 
-<style>
+    <style>
     .error { color: #b00020; }
     .thumb { display:inline-block; margin:6px; text-align:center }
-</style>
+    </style>
 
 {% endblock %}

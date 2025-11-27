@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Add New Item</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'style.css' %}">
   <style>
     html, body {
       height: 100%;
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #fafafa;
+      background: var(--bg);
+      color: var(--text);
     }
 
     /* center the form on the screen */
@@ -28,8 +31,8 @@
       padding: 20px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      background: var(--card-bg);
+      box-shadow: 0 6px 18px var(--shadow);
     }
 
     label {
@@ -51,16 +54,14 @@
     button {
       margin-top: 15px;
       padding: 10px 15px;
-      background: #007BFF;
+      background: var(--accent);
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       font-size: 15px;
     }
-    button:hover {
-      background: #0056b3;
-    }
+    button:hover { opacity: 0.9; }
 
     /* messages styling */
     .messages {

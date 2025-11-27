@@ -1,28 +1,91 @@
-    header {
-      background: #fff;
-      padding: 1rem 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    #LogoId{font-size: 1.5rem; font-weight: bold; color: #ff6b6b; text-decoration: none;} 
-    header nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-    }
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted-text: #666666;
+  --card-bg: #ffffff;
+  --card-border: rgba(0,0,0,0.08);
+  --header-bg: #ffffff;
+  --footer-bg: #333333;
+  --shadow: rgba(0,0,0,0.1);
+  --accent: #ff6b6b;
+}
 
-    /* Footer */
-    footer {
-      background: #333;
-      color: #fff;
-      text-align: center;
-      padding: 2rem 5%;
-      margin-top: 9rem;
-    }
-    footer a {color: #ff6b6b; text-decoration: none;}
+[data-theme="dark"] {
+  --bg: #0b0b0b;
+  --text: #f0f0f0;
+  --muted-text: #c2c2c2;
+  --card-bg: #151515;
+  --card-border: rgba(255,255,255,0.08);
+  --header-bg: #101010;
+  --footer-bg: #101010;
+  --shadow: rgba(0,0,0,0.4);
+  --accent: #ff6b6b;
+}
+
+html {
+  zoom: 0.8;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  background: var(--header-bg);
+  padding: 1rem 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+#LogoId{font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none;}
+
+header nav a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+}
+
+footer {
+  background: var(--footer-bg);
+  color: var(--text);
+  text-align: center;
+  padding: 2rem 5%;
+  margin-top: 9rem;
+}
+
+footer a {color: var(--accent); text-decoration: none;}
+
+.product-card,
+.deal-item,
+.cart-items,
+.cart-summary,
+.product-container,
+.related-item {
+  background: var(--card-bg);
+  box-shadow: 0 2px 8px var(--shadow);
+  border: 1px solid var(--card-border);
+}
+
+.product-title,
+.price,
+.product-price,
+.total,
+.countdown {
+  color: var(--text);
+}
+
+button,
+.checkout-btn,
+.deal-item button,
+.product-actions button,
+.quantity button {
+  background: var(--accent);
+  color: #ffffff;
+}

@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Modern Login Page</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'style.css' %}">
   <style>
     * {
       margin: 0;
@@ -14,7 +16,7 @@
     }
     
     body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: var(--bg);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -28,21 +30,21 @@
     }
     
     .login-box {
-      background: white;
+      background: var(--card-bg);
       padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px var(--shadow);
       text-align: center;
     }
     
     .login-box h2 {
-      color: #333;
+      color: var(--text);
       margin-bottom: 10px;
       font-weight: 600;
     }
     
     .login-box p {
-      color: #666;
+      color: var(--muted-text);
       margin-bottom: 30px;
     }
     
@@ -70,7 +72,7 @@
       position: absolute;
       top: 14px;
       left: 14px;
-      color: #999;
+      color: var(--muted-text);
       pointer-events: none;
       transition: 0.3s;
       font-size: 16px;
@@ -81,7 +83,7 @@
       top: -10px;
       left: 10px;
       font-size: 12px;
-      background: white;
+      background: var(--card-bg);
       padding: 0 8px;
       color: #6a11cb;
     }
@@ -147,8 +149,9 @@
       border: 1px solid #a5d6a7;
     }
   </style>
-</head>
-<body>
+  </head>
+  <body>
+  <img src="{% static 'images/Darkmode.svg' %}" alt="Dark Light" id="DarkLight" style="position:fixed; top:12px; right:12px; height:1em; width:1rem" />
   <div class="container">
     <div class="login-box">
       <h2>Welcome Back</h2>
@@ -206,5 +209,6 @@
       });
     });
   </script>
+  <script src="{% static 'script.js' %}"></script>
 </body>
 </html>

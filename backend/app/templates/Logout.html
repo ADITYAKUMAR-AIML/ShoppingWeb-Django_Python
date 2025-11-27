@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Logout</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f0f0f0;
+            background-color: var(--bg);
+            color: var(--text);
             padding-top: 50px;
         }
         .container {
-            background-color: #fff;
+            background-color: var(--card-bg);
             padding: 40px;
             margin: auto;
             width: 400px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px var(--shadow);
         }
         img {
             width: 150px;
             margin-bottom: 20px;
         }
         button {
-            background-color: #ff4b5c;
+            background-color: var(--accent);
             color: white;
             padding: 10px 20px;
             border: none;
@@ -31,12 +34,11 @@
             cursor: pointer;
             font-size: 16px;
         }
-        button:hover {
-            background-color: #ff1f3d;
-        }
+        button:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
+    <img src="{% static 'images/Darkmode.svg' %}" alt="Dark Light" id="DarkLight" style="position:fixed; top:12px; right:12px; height:1em; width:1rem" />
     <div class="container">
         <h2>Are you sure you want to logout?</h2>
         <img src="https://png.pngtree.com/png-vector/20240705/ourmid/pngtree-gradient-sad-emoji-illustration-png-image_12994045.png" alt="Sad Emoji">
@@ -45,5 +47,6 @@
             <button type="submit">Logout</button>
         </form>
     </div>
+<script src="{% static 'script.js' %}"></script>
 </body>
 </html>

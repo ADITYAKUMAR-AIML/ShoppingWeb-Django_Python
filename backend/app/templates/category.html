@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FashionCompras - Fashion</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="{% static 'style.css' %}">
   <style>
     /* General Reset */
     * {
@@ -16,8 +16,8 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+      background: var(--bg);
+      color: var(--text);
     }
 
     /* Header */
@@ -26,8 +26,8 @@
       justify-content: space-between;
       align-items: center;
       padding: 15px 50px;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: var(--header-bg);
+      box-shadow: 0 2px 6px var(--shadow);
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -35,12 +35,12 @@
     .logo {
       font-size: 26px;
       font-weight: bold;
-      color: #ff6b6b;
+      color: var(--accent);
     }
     nav a {
       margin: 0 15px;
       text-decoration: none;
-      color: #333;
+      color: var(--text);
       font-weight: 500;
       transition: color 0.3s ease;
     }
@@ -75,7 +75,7 @@
       font-size: 28px;
       font-weight: bold;
       text-align: center;
-      color: #444;
+      color: var(--text);
     }
     .products {
       display: grid;
@@ -84,10 +84,10 @@
       margin-top: 20px;
     }
     .card {
-      background: #fff;
+      background: var(--card-bg);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px var(--shadow);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
     }
@@ -103,11 +103,13 @@
     .card-content {
       padding: 15px;
       text-align: center;
+      background: #ffffff;
+      border-top: 0;
     }
     .card h3 {
       font-size: 18px;
       margin: 10px 0;
-      color: #333;
+      color: var(--text);
     }
     .price {
       font-size: 16px;
@@ -132,14 +134,14 @@
 
     /* Footer */
     footer {
-      background: #222;
-      color: #bbb;
+      background: var(--footer-bg);
+      color: var(--text);
       text-align: center;
       padding: 20px;
       margin-top: 50px;
     }
     footer a {
-      color: #ff6b6b;
+      color: var(--accent);
       text-decoration: none;
       margin: 0 10px;
     }
@@ -241,31 +243,7 @@
 
 {% include "products.html"  %}
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("✅ DOM fully loaded");
-
-    const DarkMode = document.getElementById("DarkLight");
-    if (!DarkMode) return; // safety check
-
-    DarkMode.addEventListener('click', function() {
-        if (DarkMode.src.includes("Darkmode.svg")) {
-            DarkMode.src = "{% static 'images/sun.webp' %}";
-            document.querySelectorAll("*").forEach(el => {
-                el.style.backgroundColor = "black";
-                document.body.style.backgroundColor = "black"; // sets body background to black
-                el.style.color = "white";
-            });
-        } else {
-            DarkMode.src = "{% static 'images/Darkmode.svg' %}";
-            document.querySelectorAll("*").forEach(el => {
-                el.style.backgroundColor = "white";
-                el.style.color = "black";
-            });
-        }
-    });
-});
-</script>
+<script src="{% static 'script.js' %}"></script>
 
 </body>
 </html>

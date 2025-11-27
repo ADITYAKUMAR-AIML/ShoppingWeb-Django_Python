@@ -51,40 +51,6 @@
 
 
     <br>
-    <script>
-      
-    document.addEventListener("DOMContentLoaded", function() {
-      console.log("✅ DOM fully loaded"); //After DOM loaded perform this fxns.
-        
-        
-        const DarkMode = document.getElementById("DarkLight"); // make sure this ID exists in HTML
-
-        DarkMode.addEventListener('click', function() {
-            
-            if (DarkMode.src.includes("Darkmode.svg")) {
-                // Switch to light mode icon
-                DarkMode.src = "{% static 'images/sun.webp' %}";
-
-                // Apply dark theme
-                document.querySelectorAll("*").forEach(el => {
-                    el.style.backgroundColor = "black";
-                    el.style.color = "white";
-                });
-
-            } else {
-                // Switch back to dark mode icon
-                DarkMode.src = "{% static 'images/Darkmode.svg' %}";
-
-                // Apply light theme
-                document.querySelectorAll("*").forEach(el => {
-                    el.style.backgroundColor = "white";
-                    el.style.color = "black";
-                });
-            }
-        });
-
-
-    });
-    </script>
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>

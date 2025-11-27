@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="nav-brand size-3xl">
+      <div className="nav-brand size-5xl">
         <Link to="/" className="gradient-text">ShopEase</Link>
       </div>
       

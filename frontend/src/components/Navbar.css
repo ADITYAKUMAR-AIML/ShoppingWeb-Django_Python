@@ -43,7 +43,7 @@
   flex-shrink: 0;
 }
 .size-3xl {
-  font-size: 3rem;
+  font-size: 4rem;
 }
 
 .nav-brand a {
@@ -189,11 +189,11 @@ body.dark-mode .navbar {
 }
 
 body.dark-mode .nav-brand a {
-  color: var(--light-orange);
+  color: white;
 }
 
 body.dark-mode .nav-links > a {
-  color: var(--light-orange);
+  color: white;
 }
 
 body.dark-mode .nav-links > a:hover {
@@ -207,28 +207,28 @@ body.dark-mode .nav-auth {
 }
 
 body.dark-mode .nav-auth span {
-  color: var(--light-orange);
+  color: white;
 }
 
 body.dark-mode .nav-auth a {
-  border-color: var(--light-orange);
-  color: var(--light-orange);
+  border-color: white;
+  color: white;
 }
 
 body.dark-mode .nav-auth a:hover {
-  background: var(--light-orange);
-  color: var(--dark-orange);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 body.dark-mode .logout-btn {
-  background: var(--light-orange);
-  color: var(--deep-orange);
-  border-color: var(--light-orange);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-color: white;
 }
 
 body.dark-mode .logout-btn:hover {
-  background: white;
-  color: var(--dark-orange);
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
 }
 
 /* Responsive Design */
