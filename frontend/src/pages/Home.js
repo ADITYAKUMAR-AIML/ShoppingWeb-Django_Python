@@ -198,14 +198,16 @@ const Home = () => {
             <div>Loading...</div>
           ) : (
             visibleProducts.map((product) => (
-              <div key={product.id} className="product">
-                <Link to={`/product/${product.id}`}>
-                  <img
-                    src={(product.images && product.images[0]?.url) || '/images/blank_image.png'}
-                    alt={product.name}
-                    className="product-img"
-                  />
-                </Link>
+              <div key={product.id} className="product-gradient">
+                <div className="product-media">
+                  <Link to={`/product/${product.id}`}>
+                    <img
+                      src={(product.images && product.images[0]?.url) || '/images/blank_image.png'}
+                      alt={product.name}
+                      className="product-img"
+                    />
+                  </Link>
+                </div>
                 <div className="product-info">
                   <Link to={`/product/${product.id}`} className="product-title-link">
                     <h3>{product.name}</h3>
@@ -213,33 +215,33 @@ const Home = () => {
                   <Link to={`/product/${product.id}`} className="product-price-link">
                     <p>${Number(product.price).toFixed(2)}</p>
                   </Link>
-                <div className="card-actions">
-                  <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
-                  <button
-                    type="button"
-                    className="add-to-cart-btn"
-                    onClick={async () => {
-                      if (!isAuthenticated) {
-                        navigate('/login');
-                        return;
-                      }
-                      if (typeof product.stock !== 'undefined') {
-                        const available = Number(product.stock) || 0;
-                        if (available <= 0) {
-                          alert('This product is out of stock');
+                  <div className="card-actions">
+                    <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
+                    <button
+                      type="button"
+                      className="add-to-cart-btn"
+                      onClick={async () => {
+                        if (!isAuthenticated) {
+                          navigate('/login');
                           return;
                         }
-                      }
-                      try {
-                        await cartAPI.addToCart(product.id, 1);
-                      } catch (err) {
-                        alert(err?.message || 'Failed to add to cart');
-                      }
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
+                        if (typeof product.stock !== 'undefined') {
+                          const available = Number(product.stock) || 0;
+                          if (available <= 0) {
+                            alert('This product is out of stock');
+                            return;
+                          }
+                        }
+                        try {
+                          await cartAPI.addToCart(product.id, 1);
+                        } catch (err) {
+                          alert(err?.message || 'Failed to add to cart');
+                        }
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
             ))

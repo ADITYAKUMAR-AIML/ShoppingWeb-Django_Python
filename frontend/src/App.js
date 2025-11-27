@@ -13,6 +13,7 @@ import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import AddProduct from './pages/AddProduct';
+import Settings from './pages/Settings';
 import './App.css';
 import './styles/theme.css';
 
@@ -35,6 +36,7 @@ function App() {
               <Route path="/orders" element={<Orders />} />
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/add-product" element={<AddProduct />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
           <footer className="site-footer">

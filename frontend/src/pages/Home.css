@@ -245,37 +245,6 @@ body.dark-mode .auth-link {
   transform: scale(1.1);
 }
 
-/* Footer */
-.footer {
-  background: var(--gradient-orange);
-  color: white;
-  text-align: center;
-  padding: 2rem 5%;
-  margin-top: 2rem;
-  box-shadow: 0 -2px 8px rgba(204, 85, 0, 0.3);
-}
-
-body.dark-mode .footer {
-  background: linear-gradient(135deg, #B34700 0%, #CC5500 50%, #8B2500 100%);
-}
-
-.footer a {
-  color: white;
-  text-decoration: none;
-  transition: color 0.2s;
-  font-weight: 500;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-  color: var(--light-orange);
-}
-
-.footer p {
-  margin: 0.5rem 0;
-  color: white;
-}
-
 /* Hero */
 .hero {
   background: var(--gradient-orange);
@@ -453,16 +422,26 @@ body.dark-mode .category div {
   margin-top: 1rem;
 }
 
+
+.product-gradient {
+  background: linear-gradient(135deg, #B34700 0%, #CC5500 50%, #8B2500 100%);
+  padding: 10px;
+  border-radius: 12px;
+}
+
 /* Product Cards */
 .product {
-  background: var(--medium-orange);
+  background: transparent;
   padding: 1rem;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 2px 6px rgba(204, 85, 0, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
   border: 2px solid var(--dark-orange);
+  border-top: none;
 }
+
+.product-info { background: #ffffff; border-top: none; border-radius: 10px; padding: 1rem; }
 
 body.dark-mode .product {
   background: #2a1a0a;
@@ -482,6 +461,8 @@ body.dark-mode .product {
   transition: transform 0.2s;
   border: 2px solid var(--dark-orange);
 }
+
+.product-media { display: flex; justify-content: center; }
 
 .product-img:hover {
   transform: scale(1.05);
@@ -796,7 +777,3 @@ tr:hover {
   font-size: 0.85rem;
   line-height: 1.2;
 }
-
-/* Ensure no top border on text/buttons container */
-.product-info { border-top: 0; }
-.card-actions { border-top: 0; }

@@ -113,34 +113,24 @@
   margin-top: 2rem;
 }
 
-.product-card {
-  background: #f8f9fa;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+.product-gradient {
+  background: linear-gradient(135deg, #B34700 0%, #CC5500 50%, #8B2500 100%);
+  padding: 10px;
+  border-radius: 12px;
 }
+
+.product-media { overflow: hidden; border-radius: 10px; }
+.product-media img { width: 100%; height: 250px; object-fit: cover; }
 
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-.product-card img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-}
+/* legacy selector kept empty to avoid unintended styles */
+.product-card {}
 
-.product-info {
-  padding: 1.5rem;
-  background: white;
-  border-top: 0;
-}
-
-.shop-page .product-info {
-  background: white;
-}
+.product-info { padding: 1.5rem; background: white; border-top: none; border-radius: 10px; }
 
 .product-info h3 {
   margin: 0 0 0.5rem 0;
@@ -168,7 +158,6 @@
   gap: 6px;
   align-items: stretch;
   margin-top: 8px;
-  border-top: 0;
 }
 
 .view-btn,
@@ -204,6 +193,19 @@
 .add-to-cart-btn:hover {
   background: #218838;
 }
+
+.show-more-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff9a1f 0%, #ffc53a 100%);
+  color: #141414;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.show-more-btn:hover { filter: brightness(1.05); }
+.show-more-btn:active { filter: brightness(0.95); }
 
 /* Loading and Error States */
 .loading,
@@ -251,56 +253,4 @@
   .card-actions {
     flex-direction: column;
   }
-}
-.pagination {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 8px 10px;
-}
-
-.page-btn {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  cursor: pointer;
-  color: #374151;
-}
-
-.page-btn.number {
-  border: 1px solid #e5e7eb;
-  background: #fff;
-}
-
-.page-btn.number.active {
-  border-color: #111827;
-  font-weight: 600;
-}
-
-.page-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.page-btn.prev,
-.page-btn.next {
-  color: #6b7280;
-}
-
-.ellipsis {
-  padding: 6px 8px;
-  color: #6b7280;
-}
-
-.page-size-select {
-  padding: 6px 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
 }

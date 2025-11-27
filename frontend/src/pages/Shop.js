@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cartAPI } from '../api/cart';
@@ -16,8 +16,7 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { isAuthenticated } = useAuth();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(5);
 
   // Extract unique categories and types from products
   const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
@@ -27,9 +26,10 @@ const Shop = () => {
     loadProducts();
   }, []);
 
+
   useEffect(() => {
-    filterAndSortProducts();
-  }, [searchQuery, products, selectedCategory, selectedType, sortBy]);
+    setVisibleCount(5);
+  }, [searchQuery, selectedCategory, selectedType, sortBy]);
 
   const loadProducts = async () => {
     try {
@@ -44,7 +44,7 @@ const Shop = () => {
     }
   };
 
-  const filterAndSortProducts = () => {
+  const filterAndSortProducts = useCallback(() => {
     let filtered = [...products];
 
     // Apply search filter
@@ -87,8 +87,11 @@ const Shop = () => {
     });
 
     setFilteredProducts(filtered);
-    setCurrentPage(1);
-  };
+  }, [products, searchQuery, selectedCategory, selectedType, sortBy]);
+
+  useEffect(() => {
+    filterAndSortProducts();
+  }, [filterAndSortProducts]);
 
   const handleResetFilters = () => {
     setSearchQuery('');
@@ -99,21 +102,6 @@ const Shop = () => {
 
   if (loading) return <div className="loading">Loading products...</div>;
   if (error) return <div className="error">{error}</div>;
-
-  const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1;
-  const getPages = (total, current) => {
-    if (total <= 7) {
-      return Array.from({ length: total }, (_, i) => i + 1);
-    }
-    if (current <= 3) {
-      return [1, 2, 3, '…', total];
-    }
-    if (current >= total - 2) {
-      return [1, '…', total - 2, total - 1, total];
-    }
-    return [1, '…', current - 1, current, current + 1, '…', total];
-  };
-  const pages = getPages(totalPages, currentPage);
 
   return (
     <div className="shop-page">
@@ -193,13 +181,10 @@ const Shop = () => {
       {filteredProducts.length === 0 ? (
         <p className="no-results">No products found matching your filters</p>
       ) : (
-        <div>
-          <div className="products-grid">
-          {filteredProducts
-            .slice((currentPage - 1) * pageSize, (currentPage - 1) * pageSize + pageSize)
-            .map(product => (
+        <div className="products-grid">
+          {filteredProducts.slice(0, visibleCount).map(product => (
             <div key={product.id} className="product-gradient">
-              <div className="product">
+              <div className="product-media">
                 <Link to={`/product/${product.id}`}>
                   <img
                     src={(product.images && product.images[0]?.url) || '/images/blank_image.png'}
@@ -207,79 +192,52 @@ const Shop = () => {
                     className="product-img"
                   />
                 </Link>
-                <div className="product-info">
-                  <Link to={`/product/${product.id}`} className="product-title-link">
-                    <h3>{product.name}</h3>
-                  </Link>
-                  <Link to={`/product/${product.id}`} className="product-price-link">
-                    <p>${Number(product.price).toFixed(2)}</p>
-                  </Link>
-                  {product.discount_price && (
-                    <p className="discount-price">${Number(product.discount_price).toFixed(2)}</p>
-                  )}
-                  <div className="card-actions">
-                    <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
-                    <button
-                      type="button"
-                      className="add-to-cart-btn"
-                      onClick={async () => {
-                        if (!isAuthenticated) {
-                          window.location.href = '/login';
-                          return;
-                        }
-                        try {
-                          await cartAPI.addToCart(product.id, 1);
-                        } catch (err) {
-                          alert(err?.message || 'Failed to add to cart');
-                        }
-                      }}
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
+              </div>
+              <div className="product-info">
+                <Link to={`/product/${product.id}`} className="product-title-link">
+                  <h3>{product.name}</h3>
+                </Link>
+                <Link to={`/product/${product.id}`} className="product-price-link">
+                  <p>${Number(product.price).toFixed(2)}</p>
+                </Link>
+                {product.discount_price && (
+                  <p className="discount-price">${Number(product.discount_price).toFixed(2)}</p>
+                )}
+                <div className="card-actions">
+                  <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
+                  <button
+                    type="button"
+                    className="add-to-cart-btn"
+                    onClick={async () => {
+                      if (!isAuthenticated) {
+                        window.location.href = '/login';
+                        return;
+                      }
+                      try {
+                        await cartAPI.addToCart(product.id, 1);
+                      } catch (err) {
+                        alert(err?.message || 'Failed to add to cart');
+                      }
+                    }}
+                  >
+                    Add to Cart
+                  </button>
                 </div>
               </div>
             </div>
           ))}
-          </div>
-          <div className="pagination">
-            <button
-              className="page-btn prev"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-            >
-              ‹ Previous
-            </button>
-            {pages.map((p, idx) => (
-              typeof p === 'number' ? (
-                <button
-                  key={`p-${p}`}
-                  className={`page-btn number ${currentPage === p ? 'active' : ''}`}
-                  onClick={() => setCurrentPage(p)}
-                >
-                  {p}
-                </button>
-              ) : (
-                <span key={`e-${idx}`} className="ellipsis">{p}</span>
-              )
-            ))}
-            <button
-              className="page-btn next"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            >
-              Next ›
-            </button>
-            <select
-              className="page-size-select"
-              value={pageSize}
-              onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
-            >
-              <option value={8}>8</option>
-              <option value={12}>12</option>
-              <option value={16}>16</option>
-            </select>
-          </div>
+        </div>
+      )}
+
+      {visibleCount < filteredProducts.length && (
+        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+          <button
+            type="button"
+            className="show-more-btn"
+            onClick={() => setVisibleCount(filteredProducts.length)}
+          >
+            Show More
+          </button>
         </div>
       )}
     </div>

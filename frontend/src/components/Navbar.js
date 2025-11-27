@@ -18,6 +18,7 @@ const Navbar = () => {
         <Link to="/" className="gradient-text">Home</Link>
         <Link to="/shop" className="gradient-text">Shop</Link>
         <Link to="/cart" className="gradient-text">Cart</Link>
+        <Link to="/settings" className="gradient-text">Settings</Link>
         {isAuthenticated && (
           <Link to="/add-product" className="gradient-text">Add Product</Link>
         )}
