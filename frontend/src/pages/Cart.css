@@ -1,0 +1,20 @@
+.qty-btn {
+  width: 30px;
+  height: 30px;
+  background: #fff !important;  /* force same background */
+  border: 1px solid #ccc !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  color: black !important;       /* fix orange/white issue */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.qty-num {
+  min-width: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
