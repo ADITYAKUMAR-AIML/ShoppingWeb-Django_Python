@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="nav-brand size-5xl">
-        <Link to="/" className="gradient-text">ShopEase</Link>
+        <Link to="/" className="gradient-text">ShopEasy</Link>
       </div>
       
       <div className="nav-links">
@@ -21,9 +21,6 @@ const Navbar = () => {
         <Link to="/settings" className="gradient-text">Settings</Link>
         {isAuthenticated && (
           <Link to="/add-product" className="gradient-text">Add Product</Link>
-        )}
-        {isAuthenticated && (
-          <Link to="/admin" className="gradient-text">Admin</Link>
         )}
         
         {isAuthenticated ? (
@@ -102,18 +99,7 @@ const Navbar = () => {
                   color: 'transparent'
                 }}>Settings</span>
               </button>
-              <button
-                onClick={() => { setOpen(false); navigate('/admin'); }}
-                style={{ textAlign: 'left', padding: '12px 10px', borderRadius: 8, border: '1px solid #eee', background: '#f9fafb'}}
-              >
-                <span style={{
-                  background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #E63946 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  color: 'transparent'
-                }}>Admin</span>
-              </button>
+              
             </div>
           </div>
         </>

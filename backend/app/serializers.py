@@ -162,3 +162,4 @@ class OrderSerializer(serializers.ModelSerializer):
             'shipping_address', 'billing_address', 'payment_method',
             'created_at', 'updated_at'
         ]
+        read_only_fields = ['id', 'user', 'items', 'total_amount', 'created_at', 'updated_at']

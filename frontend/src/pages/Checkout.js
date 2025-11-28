@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cartAPI } from '../api/cart';
 import { ordersAPI } from '../api/orders';
+import './Checkout.css'
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -10,7 +11,6 @@ const Checkout = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [billing, setBilling] = useState('');
   const [shipping, setShipping] = useState('');
   const [payment, setPayment] = useState('card');
   const [processing, setProcessing] = useState(false);
@@ -45,7 +45,6 @@ const Checkout = () => {
       await new Promise(res => setTimeout(res, 1200));
       const order = await ordersAPI.createOrder({
         shipping_address: shipping,
-        billing_address: billing,
         payment_method: payment
       });
       navigate(`/order-success?orderId=${order.id}`);
@@ -64,10 +63,6 @@ const Checkout = () => {
       <h1>Checkout</h1>
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
         <form onSubmit={onSubmit}>
-          <div className="form-group">
-            <label>Billing Address</label>
-            <textarea value={billing} onChange={(e) => setBilling(e.target.value)} required />
-          </div>
           <div className="form-group">
             <label>Shipping Address</label>
             <textarea value={shipping} onChange={(e) => setShipping(e.target.value)} required />

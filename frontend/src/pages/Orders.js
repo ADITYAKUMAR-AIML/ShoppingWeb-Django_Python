@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ordersAPI } from '../api/orders';
-
+import './Orders.css'
 const Orders = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();

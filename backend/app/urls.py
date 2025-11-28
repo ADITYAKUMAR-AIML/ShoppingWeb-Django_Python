@@ -24,8 +24,8 @@ urlpatterns = [
     path('item/<int:pk>/edit/', views.edit_item, name='edit_item'),
     path('ContactPage/', views.ContactPage, name='ContactPage'),
     
-    # API URLs - ADD THIS LINE
-    path('api/', include('app.api_urls')),  # <-- THIS IS MISSING
+    # API URLs
+    path('api/', include('app.api.urls')),
 ]
 
 if settings.DEBUG:

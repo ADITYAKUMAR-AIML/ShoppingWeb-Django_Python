@@ -1,7 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import { SoundProvider } from './context/SoundContext';
+import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/Navbar';
 import GlobalClickSound from './components/GlobalClickSound';
 import Home from './pages/Home';
@@ -20,13 +22,66 @@ import Admin from './pages/Admin';
 import './App.css';
 import './styles/theme.css';
 
+const RequireAuth = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
 function App() {
   return (
     <AuthProvider>
       <SoundProvider>
-        <Router>
-          <GlobalClickSound />
-          <div className="App">
+        <ToastProvider>
+          <Router>
+            <GlobalClickSound />
+            {(() => {
+              const ReloadConfetti = () => {
+                useEffect(() => {
+                  const entries = performance.getEntriesByType && performance.getEntriesByType('navigation');
+                  const type = entries && entries.length ? entries[0].type : (performance.navigation ? (performance.navigation.type === performance.navigation.TYPE_RELOAD ? 'reload' : 'navigate') : 'navigate');
+                  if (type !== 'reload') return;
+                  const canvas = document.createElement('canvas');
+                  canvas.className = 'confetti-canvas';
+                  canvas.style.position = 'fixed';
+                  canvas.style.inset = '0';
+                  canvas.style.pointerEvents = 'none';
+                  canvas.width = window.innerWidth;
+                  canvas.height = window.innerHeight;
+                  document.body.appendChild(canvas);
+                  const ctx = canvas.getContext('2d');
+                  const pieces = Array.from({ length: 180 }).map(() => ({
+                    x: Math.random() * canvas.width,
+                    y: -Math.random() * 100,
+                    r: Math.random() * 6 + 2,
+                    c: `hsl(${Math.random()*360},80%,60%)`,
+                    s: Math.random() * 3 + 2
+                  }));
+                  let anim;
+                  const draw = () => {
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    pieces.forEach(p => {
+                      ctx.fillStyle = p.c;
+                      ctx.beginPath();
+                      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                      ctx.fill();
+                      p.y += p.s;
+                      p.x += Math.sin(p.y/20);
+                    });
+                    anim = requestAnimationFrame(draw);
+                  };
+                  draw();
+                  const t = setTimeout(() => {
+                    cancelAnimationFrame(anim);
+                    canvas.remove();
+                  }, 2000);
+                  return () => { cancelAnimationFrame(anim); clearTimeout(t); canvas.remove(); };
+                }, []);
+                return null;
+              };
+              return <ReloadConfetti />;
+            })()}
+            <div className="App">
           <Navbar />
           <main>
             <Routes>
@@ -40,12 +95,12 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/order-success" element={<OrderSuccess />} />
-              <Route path="/add-product" element={<AddProduct />} />
+              <Route path="/add-product" element={<RequireAuth><AddProduct /></RequireAuth>} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
             </Routes>
           </main>
-          <footer className="site-footer">
+            <footer className="site-footer">
             <div className="footer-top">
               <div className="footer-col">
                 <div className="footer-title">ABOUT</div>
@@ -145,9 +200,10 @@ function App() {
                 <span className="badge">EMI</span>
               </div>
             </div>
-          </footer>
-        </div>
-        </Router>
+            </footer>
+          </div>
+          </Router>
+        </ToastProvider>
       </SoundProvider>
     </AuthProvider>
   );

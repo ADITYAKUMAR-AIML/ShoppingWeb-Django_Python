@@ -36,20 +36,22 @@ export const productsAPI = {
   // Create product with multiple images
   createProduct(data) {
     const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('description', data.description);
-    formData.append('price', data.price);
+    formData.append('name', String(data.name || ''));
+    formData.append('description', String(data.description || ''));
+    formData.append('price', String(data.price ?? ''));
     if (data.category_slug) {
       formData.append('category_slug', data.category_slug);
     } else if (data.category) {
       formData.append('category', data.category);
     }
     if (typeof data.stock !== 'undefined') {
-      formData.append('stock', data.stock);
+      formData.append('stock', String(data.stock));
       const available = Number(data.stock) > 0;
-      formData.append('available', available);
+      formData.append('available', available ? 'true' : 'false');
     }
-    (data.images || []).forEach(file => formData.append('images', file));
+    (data.images || [])
+      .filter(Boolean)
+      .forEach(file => formData.append('images', file, file.name || 'upload.jpg'));
     return apiClient.post('/products/', formData);
   }
 };

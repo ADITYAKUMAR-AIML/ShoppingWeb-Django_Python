@@ -561,6 +561,29 @@ body {
 .navbar a { margin-right: 10px; color: var(--text); }
 .navbar .logout-btn { margin-left: 8px; }
 
+.navbar .nav-brand a,
+.navbar .nav-links a,
+.navbar .nav-auth a,
+.navbar .gradient-text,
+.navbar a {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: none !important;
+  text-decoration: none;
+}
+
+.navbar .nav-links a:hover,
+.navbar a:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-decoration: underline;
+}
+
+.navbar .hello-btn span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
 .products-section .product {
   border: 1px solid #eee;
   border-top: none;

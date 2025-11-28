@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cartAPI } from '../api/cart';
 import { productsAPI } from '../api/products';
+import { useToast } from '../context/ToastContext';
 import './Shop.css';
 import './Home.css';
+import '../styles/ProductCard.css';
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -16,6 +18,7 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { isAuthenticated } = useAuth();
+  const { showToast } = useToast();
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -315,31 +318,43 @@ const Shop = () => {
                   </Link>
                 </div>
                 <div className="product-info">
-                  <Link to={`/product/${product.id}`} className="product-title-link">
-                    <h3>{product.name}</h3>
-                  </Link>
-                  <Link to={`/product/${product.id}`} className="product-price-link">
-                    <p>${Number(product.price).toFixed(2)}</p>
-                  </Link>
-                  <div className="card-actions">
-                    <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
-                    <button
-                      type="button"
-                      className="add-to-cart-btn"
-                      onClick={async () => {
-                        if (!isAuthenticated) {
-                          window.location.href = '/login';
-                          return;
-                        }
-                        try {
-                          await cartAPI.addToCart(product.id, 1);
-                        } catch (err) {
-                          alert(err?.message || 'Failed to add to cart');
-                        }
-                      }}
-                    >
-                      Add to Cart
-                    </button>
+                  <div className="product-content">
+                    <Link to={`/product/${product.id}`} className="product-title-link">
+                      <h3>{product.name}</h3>
+                    </Link>
+                    <Link to={`/product/${product.id}`} className="product-price-link">
+                      <p>${Number(product.price).toFixed(2)}</p>
+                    </Link>
+                    <div className="card-actions">
+                      <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
+                      <button
+                        type="button"
+                        className="add-to-cart-btn"
+                        onClick={async () => {
+                          if (!isAuthenticated) {
+                            window.location.href = '/login';
+                            return;
+                          }
+                          if (typeof product.stock !== 'undefined') {
+                            const available = Number(product.stock) || 0;
+                            if (available <= 0) {
+                              showToast('Out of stock', 'error');
+                              return;
+                            }
+                          }
+                          try {
+                            await cartAPI.addToCart(product.id, 1);
+                            showToast('Item added in cart', 'success');
+                          } catch (err) {
+                            const message = err?.response?.data?.detail || err?.message || 'Failed to add to cart';
+                            const isStockIssue = /stock/i.test(message || '');
+                            showToast(isStockIssue ? 'Out of stock' : message, 'error');
+                          }
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

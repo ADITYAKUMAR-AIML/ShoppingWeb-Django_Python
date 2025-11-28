@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productsAPI } from '../api/products';
-
+import './AddProduct.css';
 const AddProduct = () => {
   const navigate = useNavigate();
   const fixedCategories = [
@@ -99,7 +99,9 @@ const AddProduct = () => {
       const created = await productsAPI.createProduct(form);
       navigate(`/product/${created.id}`);
     } catch (err) {
-      setError('Failed to add product');
+      const msg = (err && err.message) ? err.message : 'Failed to add product';
+      const isUnauthorized = /401/.test(msg) || /unauthor/i.test(msg);
+      setError(isUnauthorized ? 'You must be logged in to add a product' : msg);
     } finally {
       setLoading(false);
     }
@@ -152,15 +154,6 @@ const AddProduct = () => {
             onDragLeave={onDragLeave}
             onPaste={onPaste}
             tabIndex={0}
-            style={{
-              border: '2px dashed #ccc',
-              borderRadius: '8px',
-              padding: '20px',
-              textAlign: 'center',
-              cursor: 'pointer',
-              minHeight: '150px',
-              backgroundColor: dragActive ? '#f0f0f0' : '#fafafa'
-            }}
           >
             <input 
               type="file" 
@@ -168,71 +161,26 @@ const AddProduct = () => {
               accept="image/*" 
               onChange={onFiles} 
               id="file-input" 
-              style={{display: 'none'}} 
+              style={{display: 'none'}}
             />
             <label 
               htmlFor="file-input" 
-              style={{
-                cursor: 'pointer',
-                display: 'block',
-                padding: '20px',
-                color: '#666'
-              }}
+              className="upload-label"
             >
               📁 Click to upload, drag & drop, or paste (Ctrl+V) images here
             </label>
             {form.images.length > 0 && (
-              <div 
-                className="image-preview-grid"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                  gap: '10px',
-                  marginTop: '20px'
-                }}
-              >
+              <div className="image-preview-grid">
                 {form.images.map((img, i) => (
-                  <div 
-                    key={i} 
-                    className="image-preview-item"
-                    style={{
-                      position: 'relative',
-                      aspectRatio: '1',
-                      borderRadius: '4px',
-                      overflow: 'hidden',
-                      border: '1px solid #ddd'
-                    }}
-                  >
+                  <div key={i} className="image-preview-item">
                     <img 
                       src={URL.createObjectURL(img)} 
                       alt={`Preview ${i + 1}`}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
                     />
                     <button 
                       type="button" 
                       className="remove-btn" 
                       onClick={() => removeImage(i)}
-                      style={{
-                        position: 'absolute',
-                        top: '5px',
-                        right: '5px',
-                        background: 'rgba(255, 0, 0, 0.8)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '24px',
-                        height: '24px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        lineHeight: '1',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
                     >
                       ×
                     </button>
@@ -241,7 +189,7 @@ const AddProduct = () => {
               </div>
             )}
           </div>
-          <small style={{display: 'block', marginTop: '8px', color: '#666'}}>
+          <small className="image-count">
             {form.images.length} image(s) selected
           </small>
         </div>

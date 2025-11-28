@@ -1,0 +1,361 @@
+/* AddProduct Page Styles */
+.add-product-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  background-color: transparent; /* Made strictly transparent */
+  color: var(--dark-orange, #333);
+}
+
+body.dark-mode .add-product-page {
+  background-color: #000;
+}
+
+.add-product-page h1 {
+  color: var(--dark-orange, #333);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Error Message */
+.add-product-page .error {
+  background-color: rgba(220, 38, 38, 0.1);
+  border: 2px solid #dc2626;
+  color: #dc2626;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Dark mode error */
+body.dark-mode .add-product-page .error {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
+  border-color: #ef4444;
+}
+
+/* Form Styles */
+.add-product-form {
+  background: var(--medium-orange, #fff);
+  padding: 30px;
+  border-radius: 12px;
+  border: 2px solid var(--dark-orange, #ccc);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+body.dark-mode .add-product-form {
+  background: transparent;
+  border-color: #444;
+  box-shadow: none;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  color: var(--dark-orange, #333);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* TRANSPARENT INPUTS - FIXED TEXT VISIBILITY */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  background: #ffffff; /* Keep white background for contrast */
+  border: 2px solid var(--dark-orange, #ccc);
+  border-radius: 8px;
+  color: #333; /* Fixed: Ensure text is visible */
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+body.dark-mode .form-group input[type="text"],
+body.dark-mode .form-group input[type="number"],
+body.dark-mode .form-group textarea,
+body.dark-mode .form-group select {
+  background: #1a1a1a; /* Dark mode background */
+  color: #f0f0f0; /* Fixed: Ensure text is visible in dark mode */
+  border-color: #444;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--deep-orange, #ff6b35);
+  box-shadow: 0 0 0 3px rgba(195, 99, 35, 0.15);
+}
+
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group textarea:focus,
+body.dark-mode .form-group select:focus {
+  box-shadow: 0 0 0 3px rgba(195, 99, 35, 0.3);
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+body.dark-mode .form-group input::placeholder,
+body.dark-mode .form-group textarea::placeholder {
+  color: #888;
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff6b35' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-color: transparent !important;
+  padding-right: 40px;
+}
+
+body.dark-mode .form-group select option {
+  background: #1a1a1a;
+  color: #f0f0f0;
+}
+
+.form-group small {
+  color: #6b7280;
+}
+
+body.dark-mode .form-group small {
+  color: #aaa;
+}
+
+/* Image Upload Zone */
+.image-upload-zone {
+  position: relative;
+  transition: all 0.3s ease;
+  background-color: var(--light-orange, #fff) !important;
+  border: 2px dashed var(--dark-orange, #ccc) !important;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  min-height: 150px;
+}
+
+body.dark-mode .image-upload-zone {
+  background-color: #1a1a1a !important;
+  border-color: #444 !important;
+}
+
+.image-upload-zone:focus {
+  outline: 2px solid #ff6b35;
+  outline-offset: 2px;
+}
+
+.image-upload-zone.drag-active {
+  border-color: var(--deep-orange, #ff6b35) !important;
+}
+
+.image-upload-zone label {
+  margin: 0;
+  font-weight: 500;
+  color: var(--dark-orange, #333) !important;
+}
+
+body.dark-mode .image-upload-zone label {
+  color: #f0f0f0 !important;
+}
+
+/* Image Preview Grid */
+.image-preview-grid {
+  background: rgba(195, 99, 35, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+body.dark-mode .image-preview-grid {
+  background: rgba(195, 99, 35, 0.1);
+}
+
+.image-preview-item {
+  background: transparent;
+  border: 1px solid var(--dark-orange, #ccc) !important;
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+body.dark-mode .image-preview-item {
+  border-color: #444 !important;
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.image-preview-item:hover img {
+  transform: scale(1.05);
+}
+
+.remove-btn {
+  transition: all 0.2s ease;
+  font-family: Arial, sans-serif;
+  padding: 0;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover {
+  background: rgba(255, 0, 0, 1) !important;
+  transform: scale(1.1);
+}
+
+/* Submit Button */
+.add-product-form .btn {
+  width: 100%;
+  padding: 14px 32px;
+  background: var(--gradient-orange, linear-gradient(135deg, #ff6b35 0%, #ff8c66 100%));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  margin-top: 10px;
+}
+
+.add-product-form .btn:hover:not(:disabled) {
+  background: var(--gradient-orange-hover, linear-gradient(135deg, #ff5a23 0%, #ff7a55 100%));
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+  transform: translateY(-2px);
+}
+
+.add-product-form .btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(255, 107, 53, 0.4);
+}
+
+.add-product-form .btn:disabled {
+  background: linear-gradient(135deg, #999 0%, #bbb 100%);
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .add-product-page {
+    padding: 20px 15px;
+  }
+
+  .add-product-page h1 {
+    font-size: 2rem;
+  }
+
+  .add-product-form {
+    padding: 20px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 10px 14px;
+  }
+
+  .image-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-product-page h1 {
+    font-size: 1.75rem;
+  }
+
+  .add-product-form {
+    padding: 15px;
+  }
+
+  .image-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+  }
+}
+
+.image-count {
+  display: block;
+  margin-top: 8px;
+  color: var(--dark-orange, #333);
+}
+
+body.dark-mode .image-count {
+  color: #f0f0f0;
+}
+
+.add-product-form input[name="name"] {
+  background: transparent !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+body.dark-mode .add-product-form input[name="name"] {
+  background: transparent !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #555 !important;
+  caret-color: #ffffff !important;
+}
+
+body.dark-mode .add-product-form input[name="name"]::placeholder {
+  color: #ffffff !important;
+  opacity: 0.85;
+}
+
+body.dark-mode .add-product-form input[name="name"]:-webkit-autofill,
+body.dark-mode .add-product-form input[name="name"]:-webkit-autofill:hover,
+body.dark-mode .add-product-form input[name="name"]:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  background-color: transparent !important;
+}

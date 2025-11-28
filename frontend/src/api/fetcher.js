@@ -46,7 +46,16 @@ class APIClient {
     }
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      let detail = '';
+      try {
+        const data = await response.json();
+        if (data && typeof data === 'object') {
+          detail = data.detail || data.error || JSON.stringify(data);
+        }
+      } catch (e) {
+        // no-op
+      }
+      throw new Error(detail || `API error: ${response.status}`);
     }
 
     return response;

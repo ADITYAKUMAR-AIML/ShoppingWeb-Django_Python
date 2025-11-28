@@ -195,98 +195,39 @@ body.dark-mode .clear-search:hover svg {
   margin-top: 2rem;
 }
 
-.product-gradient {
-  background: white;
-  padding: 6px;
-  border-radius: 12px;
-}
-body.dark-mode .product-gradient { background: #2a2a2a; }
-
-.product-media { overflow: hidden; border-radius: 8px; }
-.product-media img { width: 100%; height: 200px; object-fit: cover; }
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+/* Shop-specific product card styling */
+.shop-page .product-gradient {
+  background: transparent;
+  box-shadow: none;
+  border: 2px solid var(--deep-orange);
 }
 
-/* legacy selector kept empty to avoid unintended styles */
-.product-card {}
-
-.product-info { 
-  padding: 1rem; 
-  background: white; 
-  border-top: none; 
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+.shop-page .product-info {
+  background: transparent !important;
+  border: 2px solid var(--deep-orange);
 }
 
-.product-info h3 {
-  margin: 0 0 0.4rem 0;
-  font-size: 1.1rem;
-  color: #333;
-  line-height: 1.3;
-  width: 100%;
+.shop-page .product-info::before {
+  display: none;
+}
+
+body.dark-mode .shop-page .product-gradient,
+body.dark-mode .shop-page .product-info {
+  border-color: #ff8c42;
 }
 
 .price {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: #28a745;
-  margin: 0.3rem 0;
+  margin: 0;
 }
 
 .discount-price {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #dc3545;
   text-decoration: line-through;
-  margin: 0.2rem 0;
-}
-
-.card-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: center;
-  margin-top: 6px;
-  width: 100%;
-}
-
-.view-btn,
-.add-to-cart-btn {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-  text-align: center;
-  text-decoration: none;
-  font-size: 0.85rem;
-  line-height: 1.2;
-  width: 140px;
-  margin: 0 auto;
-}
-
-.view-btn {
-  background: #007bff;
-  color: white;
-}
-
-.view-btn:hover {
-  background: #0056b3;
-}
-
-.add-to-cart-btn {
-  background: #28a745;
-  color: white;
-}
-
-.add-to-cart-btn:hover {
-  background: #218838;
+  margin: 0;
 }
 
 .show-more-btn {

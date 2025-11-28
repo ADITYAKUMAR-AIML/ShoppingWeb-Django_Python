@@ -2,54 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Home.css';
+import '../styles/ProductCard.css';
 import { productsAPI } from '../api/products';
 import { API_BASE } from '../api/config';
 import { cartAPI } from '../api/cart';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const Home = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { showToast } = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [slideIndex, setSlideIndex] = useState(0);
-  useEffect(() => {
-    const canvas = document.createElement('canvas');
-    canvas.className = 'confetti-canvas';
-    canvas.style.position = 'fixed';
-    canvas.style.inset = '0';
-    canvas.style.pointerEvents = 'none';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    const pieces = Array.from({ length: 180 }).map(() => ({
-      x: Math.random() * canvas.width,
-      y: -Math.random() * 100,
-      r: Math.random() * 6 + 2,
-      c: `hsl(${Math.random()*360},80%,60%)`,
-      s: Math.random() * 3 + 2
-    }));
-    let anim;
-    const draw = () => {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      pieces.forEach(p => {
-        ctx.fillStyle = p.c;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-        ctx.fill();
-        p.y += p.s;
-        p.x += Math.sin(p.y/20);
-      });
-      anim = requestAnimationFrame(draw);
-    };
-    draw();
-    const t = setTimeout(() => {
-      cancelAnimationFrame(anim);
-      canvas.remove();
-    }, 2000);
-    return () => { cancelAnimationFrame(anim); clearTimeout(t); canvas.remove(); };
-  }, []);
+  
 
   const visibleProducts = products.slice(0, 10);
 
@@ -92,7 +59,7 @@ const Home = () => {
         </div>
       </div>
       {/* Hero Section */}
-      <section className="hero gradient-bg" style={{ paddingTop: '6px', paddingRight: '0px', paddingBottom: '0px', paddingLeft: '0px' }}>
+      <section className="hero-gradient-bg" style={{ paddingTop: '6px', paddingRight: '0px', paddingBottom: '0px', paddingLeft: '0px'}}>
         <div className="hero-slideshow">
           <img
             className={`hero-slide ${slideIndex === 0 ? 'active' : ''}`}
@@ -112,7 +79,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories */}
+      {/*Categories */}
       <section className="categories">
         <Link to="/category/fashion" className="category">
           <div>👕 Fashion</div>
@@ -134,7 +101,7 @@ const Home = () => {
 
       {products.length > 0 && (
         <section className="featured-section">
-          <h3 className="featured-title">Featured Picks</h3>
+          <h2 className="featured-title">Featured Picks</h2>
           <div className="featured-grid">
             {(products.slice(6, 12)).map((p, i) => (
               <Link key={p.id} to={`/product/${p.id}`} className="featured-card">
@@ -209,38 +176,43 @@ const Home = () => {
                   </Link>
                 </div>
                 <div className="product-info">
-                  <Link to={`/product/${product.id}`} className="product-title-link">
-                    <h3>{product.name}</h3>
-                  </Link>
-                  <Link to={`/product/${product.id}`} className="product-price-link">
-                    <p>${Number(product.price).toFixed(2)}</p>
-                  </Link>
-                  <div className="card-actions">
-                    <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
-                    <button
-                      type="button"
-                      className="add-to-cart-btn"
-                      onClick={async () => {
-                        if (!isAuthenticated) {
-                          navigate('/login');
-                          return;
-                        }
-                        if (typeof product.stock !== 'undefined') {
-                          const available = Number(product.stock) || 0;
-                          if (available <= 0) {
-                            alert('This product is out of stock');
+                  <div className="product-content">
+                    <Link to={`/product/${product.id}`} className="product-title-link">
+                      <h3>{product.name}</h3>
+                    </Link>
+                    <Link to={`/product/${product.id}`} className="product-price-link">
+                      <p>${Number(product.price).toFixed(2)}</p>
+                    </Link>
+                    <div className="card-actions">
+                      <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
+                      <button
+                        type="button"
+                        className="add-to-cart-btn"
+                        onClick={async () => {
+                          if (!isAuthenticated) {
+                            navigate('/login');
                             return;
                           }
-                        }
-                        try {
-                          await cartAPI.addToCart(product.id, 1);
-                        } catch (err) {
-                          alert(err?.message || 'Failed to add to cart');
-                        }
-                      }}
-                    >
-                      Add to Cart
-                    </button>
+                          if (typeof product.stock !== 'undefined') {
+                            const available = Number(product.stock) || 0;
+                            if (available <= 0) {
+                              showToast('Out of stock', 'error');
+                              return;
+                            }
+                          }
+                          try {
+                            await cartAPI.addToCart(product.id, 1);
+                            showToast('Item added in cart', 'success');
+                          } catch (err) {
+                            const message = err?.response?.data?.detail || err?.message || 'Failed to add to cart';
+                            const isStockIssue = /stock/i.test(message || '');
+                            showToast(isStockIssue ? 'Out of stock' : message, 'error');
+                          }
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

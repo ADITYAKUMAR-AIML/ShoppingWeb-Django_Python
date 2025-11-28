@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { productsAPI } from '../api/products';
 import { ordersAPI } from '../api/orders';
 import './Admin.css';
+import DataInsights from './DataInsights';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const Admin = () => {
   const [categories, setCategories] = useState([]);
   const [activeTab, setActiveTab] = useState('products');
   const [query, setQuery] = useState('');
+  const [viewMode, setViewMode] = useState('tables'); // 'tables' or 'insights'
+  
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -58,102 +61,150 @@ const Admin = () => {
     matchesQuery([c.slug || c.key, c.name])
   );
 
+  // Calculate insights
+  const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
+  const totalProducts = products.length;
+  const lowStockProducts = products.filter(p => p.stock < 10).length;
+  const pendingOrders = orders.filter(o => o.status === 'pending').length;
+  const completedOrders = orders.filter(o => o.status === 'completed').length;
+
   if (loading) return <div className="admin-page"><div className="loading">Loading admin data...</div></div>;
   if (error) return <div className="admin-page"><div className="error">{error}</div></div>;
 
   return (
     <div className="admin-page">
       <h1>Admin Dashboard</h1>
-      <div className="admin-controls">
-        <div className="tabs">
-          <button className={activeTab === 'products' ? 'active' : ''} onClick={() => setActiveTab('products')}>Products</button>
-          <button className={activeTab === 'orders' ? 'active' : ''} onClick={() => setActiveTab('orders')}>Orders</button>
-          <button className={activeTab === 'categories' ? 'active' : ''} onClick={() => setActiveTab('categories')}>Categories</button>
-        </div>
-        <input
-          type="text"
-          placeholder="Search across visible table"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="search-input"
-        />
+      
+      {/* Toggle between Data Tables and Data Insights */}
+      <div className="view-toggle">
+        <button 
+          className={viewMode === 'tables' ? 'toggle-btn active' : 'toggle-btn'}
+          onClick={() => setViewMode('tables')}
+        >
+          Data Tables
+        </button>
+        <button 
+          className={viewMode === 'insights' ? 'toggle-btn active' : 'toggle-btn'}
+          onClick={() => setViewMode('insights')}
+        >
+          Data Insights
+        </button>
       </div>
 
-      {activeTab === 'products' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Available</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.id}</td>
-                  <td>{p.name}</td>
-                  <td>{p.category || p.category_slug || '-'}</td>
-                  <td>{typeof p.price !== 'undefined' ? Number(p.price).toFixed(2) : '-'}</td>
-                  <td>{typeof p.stock !== 'undefined' ? p.stock : '-'}</td>
-                  <td>{p.available ? 'Yes' : 'No'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {viewMode === 'tables' && (
+        <>
+          <div className="admin-controls">
+            <div className="tabs">
+              <button className={activeTab === 'products' ? 'active' : ''} onClick={() => setActiveTab('products')}>Products</button>
+              <button className={activeTab === 'orders' ? 'active' : ''} onClick={() => setActiveTab('orders')}>Orders</button>
+              <button className={activeTab === 'categories' ? 'active' : ''} onClick={() => setActiveTab('categories')}>Categories</button>
+            </div>
+            <input
+              type="text"
+              placeholder="Search across visible table"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+
+          {activeTab === 'products' && (
+            <div className="table-wrap">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Available</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map((p) => (
+                    <tr key={p.id}>
+                      <td>{p.id}</td>
+                      <td>{p.name}</td>
+                      <td>{p.category || p.category_slug || '-'}</td>
+                      <td>{typeof p.price !== 'undefined' ? Number(p.price).toFixed(2) : '-'}</td>
+                      <td>{typeof p.stock !== 'undefined' ? p.stock : '-'}</td>
+                      <td>{p.available ? 'Yes' : 'No'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className="table-wrap">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.map((o) => (
+                    <tr key={o.id}>
+                      <td>{o.id}</td>
+                      <td>{o.user?.email || o.user?.username || '-'}</td>
+                      <td>{o.status || '-'}</td>
+                      <td>{typeof o.total_amount !== 'undefined' ? Number(o.total_amount).toFixed(2) : '-'}</td>
+                      <td>{o.created_at || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === 'categories' && (
+            <div className="table-wrap">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Slug</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCategories.map((c) => (
+                    <tr key={c.slug || c.key || c.name}>
+                      <td>{c.slug || c.key || '-'}</td>
+                      <td>{c.name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
 
-      {activeTab === 'orders' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.map((o) => (
-                <tr key={o.id}>
-                  <td>{o.id}</td>
-                  <td>{o.user?.email || o.user?.username || '-'}</td>
-                  <td>{o.status || '-'}</td>
-                  <td>{typeof o.total_amount !== 'undefined' ? Number(o.total_amount).toFixed(2) : '-'}</td>
-                  <td>{o.created_at || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {activeTab === 'categories' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Slug</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCategories.map((c) => (
-                <tr key={c.slug || c.key || c.name}>
-                  <td>{c.slug || c.key || '-'}</td>
-                  <td>{c.name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {viewMode === 'insights' && (
+        <>
+          <div className="insights-container">
+            {/* Your existing 6 summary cards */}
+            <div className="insight-card">
+              <h3>Total Revenue</h3>
+              <p className="insight-value">${totalRevenue.toFixed(2)}</p>
+            </div>
+            {/* ... rest of your cards ... */}
+          </div>
+          
+          {/* NEW: Add DataInsights component below cards */}
+          <DataInsights 
+            products={products}
+            orders={orders}
+            categories={categories}
+          />
+        </>
       )}
     </div>
   );

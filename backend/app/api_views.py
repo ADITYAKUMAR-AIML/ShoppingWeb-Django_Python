@@ -1,9 +1,10 @@
 from rest_framework import viewsets, permissions, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from django.contrib.auth import get_user_model
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .serializers import UserSerializer
 
@@ -69,8 +70,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         product = serializer.save()
-        for img in request.FILES.getlist('images'):
-            ProductImage.objects.create(product=product, image=img)
         output = ProductSerializer(product, context={'request': request}).data
         return Response(output, status=status.HTTP_201_CREATED)
 
@@ -154,18 +153,37 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         cart, _ = Cart.objects.get_or_create(user=self.request.user)
+
+        insufficient = []
+        for item in cart.items.select_related('product').all():
+            if item.quantity > (item.product.stock or 0):
+                insufficient.append({
+                    'product_id': item.product.id,
+                    'name': item.product.name,
+                    'requested': item.quantity,
+                    'available': item.product.stock or 0,
+                })
+        if insufficient:
+            raise ValidationError({
+                'stock': 'Insufficient stock for some items',
+                'details': insufficient,
+            })
+
         order = serializer.save(user=self.request.user, total_amount=cart.total())
-        
-        # Move cart items to order items
-        for cart_item in cart.items.all():
+
+        for cart_item in cart.items.select_related('product').all():
             OrderItem.objects.create(
                 order=order,
                 product=cart_item.product,
                 quantity=cart_item.quantity,
                 price=cart_item.product.price
             )
-        
-        # Clear cart
+
+            product = cart_item.product
+            product.stock = max(0, (product.stock or 0) - cart_item.quantity)
+            product.available = product.stock > 0
+            product.save(update_fields=['stock', 'available', 'updated_at'])
+
         cart.items.all().delete()
 
 class UserProfileViewSet(viewsets.GenericViewSet):
@@ -184,6 +202,7 @@ class UserProfileViewSet(viewsets.GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
 def get_current_user(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
