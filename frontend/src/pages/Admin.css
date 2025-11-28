@@ -1,0 +1,20 @@
+/* Basic admin page styling with dark-mode friendly colors */
+.admin-page { max-width: 1200px; margin: 24px auto; padding: 16px; }
+.admin-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
+.tabs { display: flex; gap: 8px; }
+.tabs button { padding: 8px 12px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; }
+body.dark-mode .tabs button { background: #1a1a1a; border-color: #3a3a3a; }
+.tabs button.active { background: #f3f4f6; }
+body.dark-mode .tabs button.active { background: #2a2a2a; }
+.search-input { padding: 8px 12px; border-radius: 8px; border: 1px solid #e5e7eb; width: 280px; }
+body.dark-mode .search-input { background: #2a2a2a; border-color: #3a3a3a; }
+.table-wrap { overflow: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+body.dark-mode .table-wrap { border-color: #3a3a3a; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+body.dark-mode .table th, body.dark-mode .table td { border-bottom-color: #3a3a3a; }
+.table th { background: #f9fafb; font-weight: 700; }
+body.dark-mode .table th { background: #1f1f1f; }
+.loading, .error { padding: 16px; border-radius: 8px; }
+.error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+body.dark-mode .error { background: #3a0a0a; color: #ffdddd; border-color: #5a1a1a; }

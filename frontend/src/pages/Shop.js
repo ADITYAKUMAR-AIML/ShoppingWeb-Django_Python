@@ -16,7 +16,10 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { isAuthenticated } = useAuth();
-  const [visibleCount, setVisibleCount] = useState(5);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
 
   // Extract unique categories and types from products
   const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
@@ -26,9 +29,9 @@ const Shop = () => {
     loadProducts();
   }, []);
 
-
+  // Reset to page 1 when filters change
   useEffect(() => {
-    setVisibleCount(5);
+    setCurrentPage(1);
   }, [searchQuery, selectedCategory, selectedType, sortBy]);
 
   const loadProducts = async () => {
@@ -98,6 +101,69 @@ const Shop = () => {
     setSelectedCategory('all');
     setSelectedType('all');
     setSortBy('name-asc');
+    setCurrentPage(1);
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Debug log
+  console.log('Pagination Debug:', {
+    totalProducts: filteredProducts.length,
+    totalPages,
+    currentPage,
+    productsPerPage,
+    indexOfFirstProduct,
+    indexOfLastProduct,
+    currentProductsCount: currentProducts.length
+  });
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    
+    if (totalPages <= maxPagesToShow) {
+      // Show all pages if total is less than max
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+      
+      // Calculate range around current page
+      let startPage = Math.max(2, currentPage - 1);
+      let endPage = Math.min(totalPages - 1, currentPage + 1);
+      
+      // Add ellipsis after first page if needed
+      if (startPage > 2) {
+        pages.push('...');
+      }
+      
+      // Add pages around current page
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      
+      // Add ellipsis before last page if needed
+      if (endPage < totalPages - 1) {
+        pages.push('...');
+      }
+      
+      // Always show last page
+      pages.push(totalPages);
+    }
+    
+    return pages;
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (loading) return <div className="loading">Loading products...</div>;
@@ -105,16 +171,70 @@ const Shop = () => {
 
   return (
     <div className="shop-page">
-      <h1>Our Products</h1>
+      <div className="shop-header">
+        <h1>
+          <svg 
+            className="shop-icon" 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          Our Products
+        </h1>
+      </div>
       
       <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
+        <div className="search-wrapper">
+          <svg 
+            className="search-icon" 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search for products, categories, or brands..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button 
+              type="button"
+              className="clear-search"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="filter-sort-container">
@@ -174,71 +294,96 @@ const Shop = () => {
         </div>
 
         <div className="results-count">
-          Showing {filteredProducts.length} of {products.length} products
+          Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
         </div>
       </div>
 
       {filteredProducts.length === 0 ? (
         <p className="no-results">No products found matching your filters</p>
       ) : (
-        <div className="products-grid">
-          {filteredProducts.slice(0, visibleCount).map(product => (
-            <div key={product.id} className="product-gradient">
-              <div className="product-media">
-                <Link to={`/product/${product.id}`}>
-                  <img
-                    src={(product.images && product.images[0]?.url) || '/images/blank_image.png'}
-                    alt={product.name}
-                    className="product-img"
-                  />
-                </Link>
-              </div>
-              <div className="product-info">
-                <Link to={`/product/${product.id}`} className="product-title-link">
-                  <h3>{product.name}</h3>
-                </Link>
-                <Link to={`/product/${product.id}`} className="product-price-link">
-                  <p>${Number(product.price).toFixed(2)}</p>
-                </Link>
-                {product.discount_price && (
-                  <p className="discount-price">${Number(product.discount_price).toFixed(2)}</p>
-                )}
-                <div className="card-actions">
-                  <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
-                  <button
-                    type="button"
-                    className="add-to-cart-btn"
-                    onClick={async () => {
-                      if (!isAuthenticated) {
-                        window.location.href = '/login';
-                        return;
-                      }
-                      try {
-                        await cartAPI.addToCart(product.id, 1);
-                      } catch (err) {
-                        alert(err?.message || 'Failed to add to cart');
-                      }
-                    }}
-                  >
-                    Add to Cart
-                  </button>
+        <>
+          <div className="products-grid">
+            {currentProducts.map(product => (
+              <div key={product.id} className="product-gradient">
+                <div className="product-media">
+                  <Link to={`/product/${product.id}`}>
+                    <img
+                      src={(product.images && product.images[0]?.url) || '/images/blank_image.png'}
+                      alt={product.name}
+                      className="product-img"
+                    />
+                  </Link>
+                </div>
+                <div className="product-info">
+                  <Link to={`/product/${product.id}`} className="product-title-link">
+                    <h3>{product.name}</h3>
+                  </Link>
+                  <Link to={`/product/${product.id}`} className="product-price-link">
+                    <p>${Number(product.price).toFixed(2)}</p>
+                  </Link>
+                  <div className="card-actions">
+                    <Link to={`/product/${product.id}`} className="view-btn">View Product</Link>
+                    <button
+                      type="button"
+                      className="add-to-cart-btn"
+                      onClick={async () => {
+                        if (!isAuthenticated) {
+                          window.location.href = '/login';
+                          return;
+                        }
+                        try {
+                          await cartAPI.addToCart(product.id, 1);
+                        } catch (err) {
+                          alert(err?.message || 'Failed to add to cart');
+                        }
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
 
-      {visibleCount < filteredProducts.length && (
-        <div style={{ textAlign: 'center', marginTop: '24px' }}>
-          <button
-            type="button"
-            className="show-more-btn"
-            onClick={() => setVisibleCount(filteredProducts.length)}
-          >
-            Show More
-          </button>
-        </div>
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                type="button"
+                className="pagination-btn"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &laquo; Previous
+              </button>
+
+              {getPageNumbers().map((page, index) => (
+                page === '...' ? (
+                  <span key={`ellipsis-${index}`} className="pagination-ellipsis">...</span>
+                ) : (
+                  <button
+                    key={page}
+                    type="button"
+                    className={`pagination-btn ${currentPage === page ? 'active' : ''}`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              ))}
+
+              <button
+                type="button"
+                className="pagination-btn"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next &raquo;
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

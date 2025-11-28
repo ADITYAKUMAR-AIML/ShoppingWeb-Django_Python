@@ -22,13 +22,16 @@ const Navbar = () => {
         {isAuthenticated && (
           <Link to="/add-product" className="gradient-text">Add Product</Link>
         )}
+        {isAuthenticated && (
+          <Link to="/admin" className="gradient-text">Admin</Link>
+        )}
         
         {isAuthenticated ? (
           <div className="nav-auth">
             <button
               className="hello-btn"
               onClick={() => setOpen(true)}
-              style={{ background: 'transparent', border: 'none', color: 'inherit', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+              style={{ background: 'transparent', border: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}
             >
               <span>Hello, {displayName}</span>
               <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -77,7 +80,7 @@ const Navbar = () => {
             <div style={{ padding: 12, display: 'grid', gap: 8 }}>
               <button
                 onClick={() => { setOpen(false); navigate('/orders'); }}
-                style={{ textAlign: 'left', padding: '12px 10px', borderRadius: 8, border: '1px solid #eee', background: '#f9fafb', cursor: 'pointer' }}
+                style={{ textAlign: 'left', padding: '12px 10px', borderRadius: 8, border: '1px solid #eee', background: '#f9fafb'}}
               >
                 <span style={{
                   background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #E63946 100%)',
@@ -89,7 +92,7 @@ const Navbar = () => {
               </button>
               <button
                 onClick={() => { setOpen(false); navigate('/settings'); }}
-                style={{ textAlign: 'left', padding: '12px 10px', borderRadius: 8, border: '1px solid #eee', background: '#f9fafb', cursor: 'pointer' }}
+                style={{ textAlign: 'left', padding: '12px 10px', borderRadius: 8, border: '1px solid #eee', background: '#f9fafb'}}
               >
                 <span style={{
                   background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #E63946 100%)',
@@ -98,6 +101,18 @@ const Navbar = () => {
                   backgroundClip: 'text',
                   color: 'transparent'
                 }}>Settings</span>
+              </button>
+              <button
+                onClick={() => { setOpen(false); navigate('/admin'); }}
+                style={{ textAlign: 'left', padding: '12px 10px', borderRadius: 8, border: '1px solid #eee', background: '#f9fafb'}}
+              >
+                <span style={{
+                  background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #E63946 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  color: 'transparent'
+                }}>Admin</span>
               </button>
             </div>
           </div>

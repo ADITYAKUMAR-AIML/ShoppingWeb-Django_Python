@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import './Settings.css';
+import { useSound } from '../context/SoundContext';
 
 const Settings = () => {
   const getInitialTheme = () => {
@@ -18,6 +20,37 @@ const Settings = () => {
   const [isDark, setIsDark] = useState(getInitialTheme);
   const [cursor, setCursor] = useState(getInitialCursor);
   const [cursorSize, setCursorSize] = useState(getInitialCursorSize);
+  
+  // Sound context
+  const { 
+    selectedSound, 
+    setSelectedSound, 
+    volume, 
+    setVolume, 
+    soundEnabled, 
+    setSoundEnabled,
+    playPreviewSound,
+    soundCategories 
+  } = useSound();
+
+  const [soundCategory, setSoundCategory] = useState(() => {
+    return localStorage.getItem('soundCategory') || 'classical';
+  });
+  
+  const getMusicalSubcategory = () => {
+    const saved = localStorage.getItem('musicalSubcategory') || 'guitar';
+    return saved;
+  };
+
+  const [musicalSubcategory, setMusicalSubcategory] = useState(getMusicalSubcategory);
+
+  useEffect(() => {
+    localStorage.setItem('soundCategory', soundCategory);
+  }, [soundCategory]);
+
+  useEffect(() => {
+    localStorage.setItem('musicalSubcategory', musicalSubcategory);
+  }, [musicalSubcategory]);
 
   useEffect(() => {
     if (isDark) {
@@ -104,6 +137,7 @@ const Settings = () => {
 
   const customCursorValues = ['Googles', 'heart', 'cart', 'laser', 'fire'];
   const isCustomCursor = customCursorValues.includes(cursor);
+
 
   return (
     <div 
@@ -303,6 +337,405 @@ const Settings = () => {
           `}</style>
         </div>
       )}
+
+      {/* Sound Section */}
+      <div style={{ marginBottom: 32 }}>
+        <h2 style={{ 
+          fontSize: 18, 
+          marginBottom: 12, 
+          fontWeight: 600,
+          color: isDark ? '#ff8c42' : '#ff6b35'
+        }}>
+          Click Sounds
+        </h2>
+        <p style={{ 
+          marginBottom: 16,
+          fontSize: 14,
+          color: isDark ? '#9ca3af' : '#6b7280'
+        }}>
+          Select a sound effect that will play when you click buttons and links throughout the website.
+        </p>
+
+        {/* Enable/Disable Toggle */}
+        <div style={{ 
+          marginBottom: 16,
+          padding: 12,
+          background: isDark ? '#2a2a2a' : '#fff',
+          borderRadius: 8,
+          border: isDark ? '1px solid #444' : '1px solid #e5e7eb',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <span style={{ 
+            fontWeight: 600,
+            color: isDark ? '#f0f0f0' : '#333'
+          }}>
+            Enable Click Sounds
+          </span>
+          <label 
+            style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
+          >
+            <input
+              type="checkbox"
+              checked={soundEnabled}
+              onChange={(e) => {
+                e.stopPropagation();
+                const newValue = e.target.checked;
+                setSoundEnabled(newValue);
+              }}
+              style={{ display: 'none' }}
+            />
+            <span
+              aria-hidden
+              style={{
+                position: 'relative',
+                width: 52,
+                height: 28,
+                background: soundEnabled ? (isDark ? '#f59e0b' : '#ff6b35') : (isDark ? '#444' : '#e5e7eb'),
+                border: '1px solid transparent',
+                borderRadius: 999,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                transition: 'background 0.2s',
+                display: 'inline-block',
+                pointerEvents: 'none'
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: soundEnabled ? 26 : 2,
+                  width: 24,
+                  height: 24,
+                  background: '#fff',
+                  borderRadius: '50%',
+                  transition: 'left 0.2s',
+                }}
+              />
+            </span>
+          </label>
+        </div>
+
+        {/* Category Tabs */}
+        <div style={{
+          display: 'flex',
+          gap: 8,
+          marginBottom: 16,
+          flexWrap: 'wrap',
+          borderBottom: isDark ? '1px solid #444' : '1px solid #e5e7eb',
+          paddingBottom: 8
+        }}>
+          {Object.keys(soundCategories).map((categoryKey) => (
+            <button
+              key={categoryKey}
+              onClick={() => {
+                setSoundCategory(categoryKey);
+                if (categoryKey !== 'musical') {
+                  setSelectedSound(null);
+                }
+              }}
+              style={{
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: 6,
+                background: soundCategory === categoryKey
+                  ? (isDark ? '#3a3a1a' : '#fef3c7')
+                  : 'transparent',
+                color: soundCategory === categoryKey
+                  ? (isDark ? '#f59e0b' : '#ff6b35')
+                  : (isDark ? '#9ca3af' : '#6b7280'),
+                fontWeight: soundCategory === categoryKey ? 600 : 400,
+                cursor: 'pointer',
+                fontSize: 14,
+                transition: 'all 0.2s',
+                borderBottom: soundCategory === categoryKey ? `2px solid ${isDark ? '#f59e0b' : '#ff6b35'}` : '2px solid transparent'
+              }}
+            >
+              <span style={{ marginRight: 6 }}>
+                {soundCategories[categoryKey].icon}
+              </span>
+              {soundCategories[categoryKey].name}
+            </button>
+          ))}
+        </div>
+
+        {/* Musical Subcategory Selection */}
+        {soundCategory === 'musical' && (
+          <div style={{
+            display: 'flex',
+            gap: 8,
+            marginBottom: 16,
+            flexWrap: 'wrap'
+          }}>
+            {Object.keys(soundCategories.musical.subcategories).map((subKey) => {
+              const subcat = soundCategories.musical.subcategories[subKey];
+              return (
+                <button
+                  key={subKey}
+                  onClick={() => {
+                    setMusicalSubcategory(subKey);
+                    setSelectedSound(null);
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    border: musicalSubcategory === subKey
+                      ? `2px solid ${isDark ? '#f59e0b' : '#ff6b35'}`
+                      : isDark ? '1px solid #444' : '1px solid #e5e7eb',
+                    borderRadius: 6,
+                    background: musicalSubcategory === subKey
+                      ? (isDark ? '#3a3a1a' : '#fef3c7')
+                      : (isDark ? '#2a2a2a' : '#fff'),
+                    color: isDark ? '#f0f0f0' : '#333',
+                    fontWeight: musicalSubcategory === subKey ? 600 : 400,
+                    cursor: 'pointer',
+                    fontSize: 14,
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <span style={{ marginRight: 6 }}>{subcat.icon}</span>
+                  {subcat.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Sound List */}
+        <div style={{
+          background: isDark ? '#2a2a2a' : '#fff',
+          borderRadius: 8,
+          border: isDark ? '1px solid #444' : '1px solid #e5e7eb',
+          padding: 16,
+          marginBottom: 16
+        }}>
+          {soundCategory === 'musical' ? (
+            <div style={{ display: 'grid', gap: 12 }}>
+              {soundCategories.musical.subcategories[musicalSubcategory]?.sounds.map((sound) => (
+                <div
+                  key={sound.id}
+                  style={{
+                    padding: '12px 16px',
+                    border: selectedSound?.id === sound.id
+                      ? `2px solid ${isDark ? '#f59e0b' : '#ff6b35'}`
+                      : isDark ? '1px solid #444' : '1px solid #e5e7eb',
+                    borderRadius: 6,
+                    background: selectedSound?.id === sound.id
+                      ? (isDark ? '#3a3a1a' : '#fef3c7')
+                      : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <span style={{
+                    color: isDark ? '#f0f0f0' : '#333',
+                    fontWeight: selectedSound?.id === sound.id ? 600 : 400
+                  }}>
+                    {sound.name}
+                  </span>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playPreviewSound(sound);
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        border: 'none',
+                        borderRadius: 4,
+                        background: isDark ? '#444' : '#e5e7eb',
+                        color: isDark ? '#f0f0f0' : '#333',
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = isDark ? '#555' : '#d1d5db';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = isDark ? '#444' : '#e5e7eb';
+                      }}
+                    >
+                      🔊 Preview
+                    </button>
+                    <button
+                      onClick={() => setSelectedSound(sound)}
+                      style={{
+                        padding: '6px 12px',
+                        border: 'none',
+                        borderRadius: 4,
+                        background: selectedSound?.id === sound.id
+                          ? (isDark ? '#f59e0b' : '#ff6b35')
+                          : (isDark ? '#444' : '#e5e7eb'),
+                        color: '#fff',
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {selectedSound?.id === sound.id ? '✓ Selected' : 'Select'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gap: 12 }}>
+              {soundCategories[soundCategory]?.sounds.map((sound) => (
+                <div
+                  key={sound.id}
+                  style={{
+                    padding: '12px 16px',
+                    border: selectedSound?.id === sound.id
+                      ? `2px solid ${isDark ? '#f59e0b' : '#ff6b35'}`
+                      : isDark ? '1px solid #444' : '1px solid #e5e7eb',
+                    borderRadius: 6,
+                    background: selectedSound?.id === sound.id
+                      ? (isDark ? '#3a3a1a' : '#fef3c7')
+                      : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <span style={{
+                    color: isDark ? '#f0f0f0' : '#333',
+                    fontWeight: selectedSound?.id === sound.id ? 600 : 400
+                  }}>
+                    {sound.name}
+                  </span>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playPreviewSound(sound);
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        border: 'none',
+                        borderRadius: 4,
+                        background: isDark ? '#444' : '#e5e7eb',
+                        color: isDark ? '#f0f0f0' : '#333',
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = isDark ? '#555' : '#d1d5db';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = isDark ? '#444' : '#e5e7eb';
+                      }}
+                    >
+                      🔊 Preview
+                    </button>
+                    <button
+                      onClick={() => setSelectedSound(sound)}
+                      style={{
+                        padding: '6px 12px',
+                        border: 'none',
+                        borderRadius: 4,
+                        background: selectedSound?.id === sound.id
+                          ? (isDark ? '#f59e0b' : '#ff6b35')
+                          : (isDark ? '#444' : '#e5e7eb'),
+                        color: '#fff',
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {selectedSound?.id === sound.id ? '✓ Selected' : 'Select'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Volume Control */}
+        {selectedSound && (
+          <div style={{
+            background: isDark ? '#2a2a2a' : '#fff',
+            borderRadius: 8,
+            border: isDark ? '1px solid #444' : '1px solid #e5e7eb',
+            padding: 16
+          }}>
+            <div style={{ marginBottom: 8 }}>
+              <span style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: isDark ? '#f0f0f0' : '#333',
+                display: 'block',
+                marginBottom: 12
+              }}>
+                Selected: {selectedSound.name}
+              </span>
+            </div>
+            
+            {/* Volume Control */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12
+            }}>
+              <span style={{
+                fontSize: 18,
+                minWidth: 30
+              }}>
+                🔊
+              </span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={(e) => setVolume(parseFloat(e.target.value))}
+                style={{
+                  flex: 1,
+                  height: 6,
+                  borderRadius: 3,
+                  outline: 'none',
+                  background: isDark
+                    ? `linear-gradient(to right, #f59e0b 0%, #f59e0b ${volume * 100}%, #444 ${volume * 100}%, #444 100%)`
+                    : `linear-gradient(to right, #f59e0b 0%, #f59e0b ${volume * 100}%, #e5e7eb ${volume * 100}%, #e5e7eb 100%)`,
+                  WebkitAppearance: 'none',
+                  appearance: 'none',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{
+                fontSize: 14,
+                color: isDark ? '#9ca3af' : '#6b7280',
+                minWidth: 50,
+                textAlign: 'right'
+              }}>
+                {Math.round(volume * 100)}%
+              </span>
+            </div>
+          </div>
+        )}
+
+        {!selectedSound && (
+          <p style={{
+            padding: 12,
+            background: isDark ? '#2a2a2a' : '#f3f4f6',
+            borderRadius: 8,
+            fontSize: 14,
+            color: isDark ? '#9ca3af' : '#6b7280',
+            textAlign: 'center',
+            marginTop: 16
+          }}>
+            💡 Select a sound from the list above. It will play when you click buttons and links throughout the website.
+          </p>
+        )}
+      </div>
     </div>
   );
 };

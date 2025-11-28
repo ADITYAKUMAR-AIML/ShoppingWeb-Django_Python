@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { SoundProvider } from './context/SoundContext';
 import Navbar from './components/Navbar';
+import GlobalClickSound from './components/GlobalClickSound';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -14,14 +16,17 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import AddProduct from './pages/AddProduct';
 import Settings from './pages/Settings';
+import Admin from './pages/Admin';
 import './App.css';
 import './styles/theme.css';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
+      <SoundProvider>
+        <Router>
+          <GlobalClickSound />
+          <div className="App">
           <Navbar />
           <main>
             <Routes>
@@ -37,6 +42,7 @@ function App() {
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/add-product" element={<AddProduct />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </main>
           <footer className="site-footer">
@@ -141,7 +147,8 @@ function App() {
             </div>
           </footer>
         </div>
-      </Router>
+        </Router>
+      </SoundProvider>
     </AuthProvider>
   );
 }
