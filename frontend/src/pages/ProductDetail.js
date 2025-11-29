@@ -19,7 +19,6 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
 
-  // Fix: Wrap loadProduct in useCallback
   const loadProduct = useCallback(async () => {
     try {
       setLoading(true);
@@ -49,6 +48,12 @@ const ProductDetail = () => {
       return;
     }
 
+    // NEW: Check if quantity exceeds available stock
+    if (quantity > product?.stock) {
+      showToast(`Only ${product.stock} units available in stock`, 'error');
+      return;
+    }
+
     try {
       setAddingToCart(true);
       await cartAPI.addToCart(product.id, quantity);
@@ -65,13 +70,19 @@ const ProductDetail = () => {
 
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value);
-    if (value >= 1 && value <= 10) {
+    // NEW: Limit max quantity to available stock or 10, whichever is lower
+    const maxAllowed = Math.min(10, product?.stock || 10);
+    if (value >= 1 && value <= maxAllowed) {
       setQuantity(value);
     }
   };
 
   const incrementQuantity = () => {
-    if (quantity < 10) setQuantity(quantity + 1);
+    // NEW: Limit max quantity to available stock or 10, whichever is lower
+    const maxAllowed = Math.min(10, product?.stock || 10);
+    if (quantity < maxAllowed) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const decrementQuantity = () => {
@@ -114,6 +125,10 @@ const ProductDetail = () => {
   const productImages = product.images && product.images.length > 0 
     ? product.images 
     : [{ id: 'placeholder', url: '/placeholder-image.jpg' }];
+
+  // NEW: Calculate max allowed quantity
+  const maxAllowedQuantity = Math.min(10, product?.stock || 10);
+  const isQuantityExceeded = quantity > product?.stock;
 
   return (
     <div className="product-detail-page">
@@ -177,6 +192,12 @@ const ProductDetail = () => {
             <span className={`stock-badge ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
               {product.stock > 0 ? '✓ In Stock' : '✗ Out of Stock'}
             </span>
+            {/* NEW: Show stock warning if low */}
+            {product.stock > 0 && product.stock <= 5 && (
+              <span className="low-stock-warning">
+                ⚠️ Only {product.stock} left!
+              </span>
+            )}
           </div>
 
           {/* Quantity Selector */}
@@ -193,7 +214,7 @@ const ProductDetail = () => {
               <input
                 type="number"
                 min="1"
-                max="10"
+                max={maxAllowedQuantity}
                 value={quantity}
                 onChange={handleQuantityChange}
                 className="quantity-input"
@@ -201,19 +222,30 @@ const ProductDetail = () => {
               <button 
                 className="qty-btn" 
                 onClick={incrementQuantity}
-                disabled={quantity >= 10}
+                disabled={quantity >= maxAllowedQuantity}
               >
                 +
               </button>
             </div>
+            {/* NEW: Show max quantity hint */}
+            <span className="quantity-hint">
+              Max: {maxAllowedQuantity} units
+            </span>
           </div>
+
+          {/* NEW: Quantity exceeded warning */}
+          {isQuantityExceeded && (
+            <div className="stock-error-message">
+              ⚠️ Requested quantity exceeds available stock ({product.stock} units)
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="product-actions">
             <button 
               onClick={addToCart} 
               className="add-to-cart-button"
-              disabled={addingToCart || product.stock === 0}
+              disabled={addingToCart || product.stock === 0 || isQuantityExceeded}
             >
               {addingToCart ? 'Adding...' : 'Add to Cart'}
             </button>
@@ -233,7 +265,7 @@ const ProductDetail = () => {
                 <span className="meta-value">{product.type}</span>
               </div>
             )}
-            {product.stock && (
+            {product.stock !== undefined && (
               <div className="meta-item">
                 <span className="meta-label">Available:</span>
                 <span className="meta-value">{product.stock} units</span>

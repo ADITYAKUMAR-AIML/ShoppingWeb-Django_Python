@@ -62,6 +62,14 @@ body.dark-mode .empty-cart {
 
 }
 
+body.dark-mode .login-prompt {
+  background: transparent;
+  border: 2px solid var(--dark-orange); /* width + style + color */
+  border-radius: 100px;
+  width: 500px;
+
+}
+
 body.dark-mode .qty-num {
   color: #fff;
 }
