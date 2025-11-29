@@ -53,3 +53,12 @@ html, body {
 .gradient-bg, .hero, .navbar {
   background-attachment: fixed;
 }
+
+/* Dark mode variable overrides */
+body.dark-mode {
+  --surface: #111827;
+  --text: #f3f4f6;
+  --text-on-gradient: #111827;
+  --border: #374151;
+  --focus-ring: #93c5fd;
+}

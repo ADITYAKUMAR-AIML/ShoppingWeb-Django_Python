@@ -21,6 +21,7 @@ import Settings from './pages/Settings';
 import Admin from './pages/Admin';
 import './App.css';
 import './styles/theme.css';
+import Chatbot from './components/Chatbot';
 
 const RequireAuth = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -100,6 +101,7 @@ function App() {
               <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
             </Routes>
           </main>
+          <Chatbot />
             <footer className="site-footer">
             <div className="footer-top">
               <div className="footer-col">

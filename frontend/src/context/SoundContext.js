@@ -128,6 +128,10 @@ export const SoundProvider = ({ children }) => {
         { id: 'modern5', name: 'Modern 4', url: '/sounds/Mordern/Mordern4.mp3', type: 'beep', frequency: 1000 },
         { id: 'modern6', name: 'Modern 5', url: '/sounds/Mordern/Mordern5.mp3', type: 'beep', frequency: 1200 },
         { id: 'modern7', name: 'Modern 6', url: '/sounds/Mordern/Mordern6.mp3', type: 'beep', frequency: 800 },
+        { id: 'modern8', name: 'Modern 7', url: '/sounds/Mordern/Mordern7.mp3', type: 'beep', frequency: 600 },
+        { id: 'modern9', name: 'Modern 8', url: '/sounds/Mordern/Mordern8.mp3', type: 'beep', frequency: 1000 },
+        { id: 'modern10', name: 'Modern 9', url: '/sounds/Mordern/Mordern9.mp3', type: 'beep', frequency: 1200 },
+        { id: 'modern11', name: 'Modern 10', url: '/sounds/Mordern/Mordern10.mp3', type: 'beep', frequency: 800 },
       ]
     }
   };

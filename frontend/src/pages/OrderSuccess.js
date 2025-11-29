@@ -24,21 +24,35 @@ const OrderSuccess = () => {
   }, []);
 
   return (
-    <div className="success-page" style={{ maxWidth: 600, margin: '60px auto', textAlign: 'center', padding: '20px' }}>
-      <div style={{ marginBottom: '30px' }}>
+    <div className="success-page" style={{ maxWidth: 640, margin: '60px auto', textAlign: 'center', padding: '24px' }}>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: 'inline-block', position: 'relative' }} aria-hidden>
+          <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Order successful" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))' }}>
+            <defs>
+              <linearGradient id="checkGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#10b981" />
+                <stop offset="100%" stopColor="#34d399" />
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="54" fill="#ecfdf5" stroke="url(#checkGradient)" strokeWidth="4" />
+            <path d="M40 62 L54 76 L82 48" fill="none" stroke="url(#checkGradient)" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      </div>
+      <div style={{ marginBottom: 20 }}>
         {animationData && (
           <Lottie 
             animationData={animationData} 
             loop={true}
             autoplay={true}
-            style={{ width: '300px', height: '300px', margin: '0 auto' }}
+            style={{ width: '200px', height: '200px', margin: '0 auto' }}
           />
         )}
       </div>
-      <h1 style={{ fontSize: '32px', marginBottom: '16px', color: '#10b981' }}>Order Successful!</h1>
-      <p style={{ fontSize: '18px', marginBottom: '12px', color: '#6b7280' }}>Your order has been placed successfully.</p>
-      {orderId && <p style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px' }}>Order #{orderId}</p>}
-      <p style={{ fontSize: '14px', color: '#9ca3af' }}>Redirecting to Orders in 3 seconds...</p>
+      <h1 style={{ fontSize: 32, marginBottom: 12, color: '#10b981' }}>Order Successful!</h1>
+      <p style={{ fontSize: 18, marginBottom: 10, color: '#6b7280' }}>Your order has been placed successfully.</p>
+      {orderId && <p style={{ fontSize: 16, fontWeight: 600, marginBottom: 10 }}>Order #{orderId}</p>}
+      <p style={{ fontSize: 14, color: '#9ca3af' }}>Redirecting to Orders in 3 seconds...</p>
     </div>
   );
 };
